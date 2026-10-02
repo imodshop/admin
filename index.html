@@ -414,7 +414,7 @@ h1.font-display, h2.font-display{ text-shadow:0 0 18px rgba(225,29,46,.45); }
       <label class="text-xs font-display text-mist-400 uppercase mt-4 block">Gemini API Key <span class="normal-case text-mist-400">(ຮັບຟຣີທີ່ aistudio.google.com/app/apikey)</span></label>
       <input id="aiGeminiKeyInput" type="password" autocomplete="off" placeholder="AIza..." class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
       <label class="text-xs font-display text-mist-400 uppercase mt-4 block">ຊື່ໂມເດວ Gemini</label>
-      <input id="aiGeminiModelInput" type="text" placeholder="gemini-2.5-flash" class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
+      <input id="aiGeminiModelInput" type="text" placeholder="gemini-3.8-flash" class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
       <p class="text-[11px] text-yellow-400 mt-1.5">Free tier ມີຂີດຈຳກັດຈຳນວນຄຳຂໍ, ແລະ Google ອາດນຳຂໍ້ມູນໄປປັບປຸງຜະລິດຕະພັນ (ສະລິບມີຊື່/ເລກບັນຊີ).</p>
     </div>
     <div id="aiClaudeFields" class="hidden">
@@ -2158,7 +2158,7 @@ async function verifyOrder(orderId, approve){
 const AI_CFG_KEY = 'vp_ai_slip_cfg';
 const AI_MODEL = 'claude-sonnet-5-5';
 function getAiCfg(){
-  const def = {provider:'gemini', apiKey:'', geminiKey:'', geminiModel:'gemini-2.5-flash', receiverName:'', bankName:'', maxAuto:0, enabled:false};
+  const def = {provider:'gemini', apiKey:'', geminiKey:'', geminiModel:'gemini-3.8-flash', receiverName:'', bankName:'', maxAuto:0, enabled:false};
   try{ return Object.assign(def, JSON.parse(localStorage.getItem(AI_CFG_KEY)||'{}')); }
   catch(e){ return def; }
 }
@@ -2173,7 +2173,7 @@ function refreshAiSlipInput(){
   document.getElementById('aiProviderInput').value = c.provider;
   document.getElementById('aiKeyInput').value = c.apiKey || '';
   document.getElementById('aiGeminiKeyInput').value = c.geminiKey || '';
-  document.getElementById('aiGeminiModelInput').value = c.geminiModel || 'gemini-2.5-flash';
+  document.getElementById('aiGeminiModelInput').value = c.geminiModel || 'gemini-3.8-flash';
   aiToggleProviderFields();
   document.getElementById('aiReceiverInput').value = c.receiverName || '';
   document.getElementById('aiBankInput').value = c.bankName || '';
@@ -2185,7 +2185,7 @@ function saveAiSlipSettings(){
     provider: document.getElementById('aiProviderInput').value,
     apiKey: (document.getElementById('aiKeyInput').value||'').trim(),
     geminiKey: (document.getElementById('aiGeminiKeyInput').value||'').trim(),
-    geminiModel: (document.getElementById('aiGeminiModelInput').value||'').trim() || 'gemini-2.5-flash',
+    geminiModel: (document.getElementById('aiGeminiModelInput').value||'').trim() || 'gemini-3.8-flash',
     receiverName: (document.getElementById('aiReceiverInput').value||'').trim(),
     bankName: (document.getElementById('aiBankInput').value||'').trim(),
     maxAuto: Math.max(0, Number(document.getElementById('aiMaxInput').value)||0),
@@ -2234,7 +2234,7 @@ async function testAiSlipKey(){
   const p = document.getElementById('aiProviderInput').value;
   const key = ((p==='claude'? document.getElementById('aiKeyInput') : document.getElementById('aiGeminiKeyInput')).value||'').trim();
   if(!key) return toastErr('ກະລຸນາປ້ອນ API Key ກ່ອນ');
-  const model = (document.getElementById('aiGeminiModelInput').value||'').trim() || 'gemini-2.5-flash';
+  const model = (document.getElementById('aiGeminiModelInput').value||'').trim() || 'gemini-3.8-flash';
   toastInfo('ກຳລັງທົດສອບ...');
   try{
     if(p==='claude') await _aiCall(key, 'Reply with the word OK.', 10);
@@ -2273,7 +2273,7 @@ Use null when a field is not visible. Do not guess.`;
       {type:'text', text:prompt}
     ], 700);
   } else {
-    txt = await _geminiCall(cfg.geminiKey, cfg.geminiModel || 'gemini-2.5-flash', [
+    txt = await _geminiCall(cfg.geminiKey, cfg.geminiModel || 'gemini-3.8-flash', [
       {inline_data:{mime_type:'image/jpeg', data:b64}},
       {text:prompt}
     ], 2048);
