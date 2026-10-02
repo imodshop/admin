@@ -193,6 +193,7 @@ h1.font-display, h2.font-display{ text-shadow:0 0 18px rgba(225,29,46,.45); }
           <button onclick="adminTab('marqueesettings')" data-tab="marqueesettings" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-bullhorn w-4"></i> ຂໍ້ຄວາມແລ່ນ</button>
           <button onclick="adminTab('wheel')" data-tab="wheel" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-dharmachakra w-4"></i> ວົງລໍສິນຄ້າ</button>
           <button onclick="adminTab('fbnotify')" data-tab="fbnotify" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-brands fa-facebook-messenger w-4"></i> ແຈ້ງເຕືອນເຟສບຸກ</button>
+          <button onclick="adminTab('aislip')" data-tab="aislip" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-robot w-4"></i> AI ກວດສະລິບ</button>
           <button onclick="adminTab('notifications')" data-tab="notifications" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-bell w-4"></i> ຈັດການແຈ້ງເຕືອນ</button>
         </nav>
       </aside>
@@ -397,6 +398,27 @@ h1.font-display, h2.font-display{ text-shadow:0 0 18px rgba(225,29,46,.45); }
     <p class="text-sm text-mist-400 mt-4 mb-2">ເລືອກສິນຄ້າທີ່ຢູ່ໃນວົງລໍ ແລະ ໃສ່ "ນ້ຳໜັກ" (ເລກຍິ່ງຫຼາຍ ໂອກາດຍິ່ງສູງ). ເປີເຊັນທີ່ຄຳນວນໄດ້ສະແດງຢູ່ຂ້າງແຖວ (ລູກຄ້າເຫັນກໍຕໍ່ເມື່ອຕິກ "ສະແດງ" ດ້ານເທິງ). ຕົວເລືອກທີ່ລູກຄ້າໄດ້ຮັບ = ຕົວເລືອກລາຄາຖືກສຸດທີ່ຍັງມີສະຕັອກ.</p>
     <div id="wheelItems" class="space-y-2"></div>
     <button onclick="saveWheelSettings()" class="mt-5 px-5 py-2.5 rounded-lg bg-plasma-500 hover:bg-plasma-600 font-display font-600 text-sm">ບັນທຶກ</button>
+  </div>
+</div>
+<div id="adm-aislip" class="admincontent hidden">
+  <h2 class="font-display font-700 text-2xl text-mist-100 mb-5">AI ກວດສະລິບ (ທຸກທະນາຄານ)</h2>
+  <div class="bg-ink-800/60 border border-ink-700 rounded-xl p-6 max-w-lg">
+    <p class="text-sm text-mist-400 mb-2">ເມື່ອລູກຄ້າແຈ້ງເຕີມເງິນ, AI ຈະອ່ານຮູບສະລິບ (ທະນາຄານໃດກໍ່ໄດ້) ແລ້ວທຽບກັບຍອດທີ່ແຈ້ງ ແລະ ບັນຊີຂອງທ່ານ. ຖ້າຖືກຕ້ອງທັງໝົດ ຈະເຕີມເງິນໃຫ້ອັດຕະໂນມັດ, ຖ້າບໍ່ກົງ ຫຼື ບໍ່ແນ່ໃຈ ຈະສົ່ງໃຫ້ແອດມິນກວດເອງ (AI ບໍ່ປະຕິເສດເອງ).</p>
+    <p class="text-xs text-yellow-400 mb-4"><i class="fa-solid fa-triangle-exclamation mr-1"></i>ກວດສະເພາະຕອນທີ່ໜ້າແອດມິນເປີດຢູ່. API Key ເກັບໃນບຣາວເຊີນີ້ເທົ່ານັ້ນ (ບໍ່ຊິງຄ໌ຂຶ້ນ cloud).</p>
+    <label class="text-xs font-display text-mist-400 uppercase">Anthropic API Key</label>
+    <input id="aiKeyInput" type="password" autocomplete="off" placeholder="sk-ant-..." class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
+    <label class="text-xs font-display text-mist-400 uppercase mt-4 block">ຊື່ບັນຊີຜູ້ຮັບເງິນ (ຂອງແອດມິນ ຕາມທີ່ຂຶ້ນໃນສະລິບ)</label>
+    <input id="aiReceiverInput" type="text" placeholder="e.g. MR TOH SOUKSAVAN" class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
+    <label class="text-xs font-display text-mist-400 uppercase mt-4 block">ຊື່ທະນາຄານຂອງບັນຊີແອດມິນ</label>
+    <input id="aiBankInput" type="text" placeholder="e.g. BCEL, LDB, JDB, APB..." class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
+    <label class="text-xs font-display text-mist-400 uppercase mt-4 block">ຍອດສູງສຸດທີ່ໃຫ້ AI ອະນຸມັດເອງ (₭, ເວັ້ນວ່າງ = ບໍ່ຈຳກັດ)</label>
+    <input id="aiMaxInput" type="number" min="0" placeholder="e.g. 500000" class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
+    <label class="flex items-center gap-2 mt-4 text-sm text-mist-200 cursor-pointer"><input id="aiEnabledInput" type="checkbox" class="accent-plasma-500"> ເປີດໃຊ້ AI ກວດສະລິບ ແລະ ອະນຸມັດອັດຕະໂນມັດ</label>
+    <div class="flex flex-wrap gap-2 mt-4">
+      <button onclick="saveAiSlipSettings()" class="px-5 py-2.5 rounded-lg bg-plasma-500 hover:bg-plasma-600 font-display font-600 text-sm">ບັນທຶກ</button>
+      <button onclick="testAiSlipKey()" class="px-5 py-2.5 rounded-lg bg-ion-500 hover:bg-ion-600 text-ink-950 font-display font-600 text-sm"><i class="fa-solid fa-plug mr-1"></i>ທົດສອບ Key</button>
+      <button onclick="removeAiSlipKey()" class="px-5 py-2.5 rounded-lg bg-ink-700 hover:bg-ink-600 text-mist-300 font-display font-600 text-sm">ລຶບ Key</button>
+    </div>
   </div>
 </div>
 <div id="adm-fbnotify" class="admincontent hidden">
@@ -1504,6 +1526,7 @@ async function checkNewTopups(){
     if(pending.length){ badge.textContent = pending.length; badge.classList.remove('hidden'); }
     else { badge.classList.add('hidden'); }
   }
+  aiProcessPendingTopups().catch(e=>console.warn('AI slip check failed', e));
   const newOnes = pending.filter(t=>!_seenTopupIds.has(t.id));
   if(newOnes.length){
     const users = loadDB(DB_KEYS.users, []);
@@ -1557,6 +1580,7 @@ async function adminTab(tab){
     if(tab==='herobanner') refreshAdminHeroBannerPreview();
     if(tab==='marqueesettings') refreshAdminMarqueeInput();
     if(tab==='fbnotify') refreshFbNotifyInput();
+    if(tab==='aislip') refreshAiSlipInput();
     if(tab==='wheel') renderAdminWheel();
     if(tab==='overview') renderAdminOverview();
   };
@@ -2112,6 +2136,198 @@ async function verifyOrder(orderId, approve){
   log('PAYMENT_'+(approve?'APPROVE':'REJECT'), `Order ${orderId}`);
   renderAdminPayments(); renderAdminOrders(); renderAdminOverview();
   toastOk(approve? 'ອະນຸມັດການຊຳລະເງິນສຳເລັດ' : 'ປະຕິເສດການຊຳລະເງິນແລ້ວ');
+}
+
+// ================= AI slip checker =================
+// Config lives ONLY in this browser's localStorage (not in DB_KEYS.settings),
+// because settings/topups are synced to Firestore and the API key must not be.
+const AI_CFG_KEY = 'vp_ai_slip_cfg';
+const AI_MODEL = 'claude-sonnet-5-5';
+function getAiCfg(){
+  try{ return Object.assign({apiKey:'', receiverName:'', bankName:'', maxAuto:0, enabled:false}, JSON.parse(localStorage.getItem(AI_CFG_KEY)||'{}')); }
+  catch(e){ return {apiKey:'', receiverName:'', bankName:'', maxAuto:0, enabled:false}; }
+}
+function refreshAiSlipInput(){
+  const c = getAiCfg();
+  document.getElementById('aiKeyInput').value = c.apiKey || '';
+  document.getElementById('aiReceiverInput').value = c.receiverName || '';
+  document.getElementById('aiBankInput').value = c.bankName || '';
+  document.getElementById('aiMaxInput').value = c.maxAuto || '';
+  document.getElementById('aiEnabledInput').checked = !!c.enabled;
+}
+function saveAiSlipSettings(){
+  const c = {
+    apiKey: (document.getElementById('aiKeyInput').value||'').trim(),
+    receiverName: (document.getElementById('aiReceiverInput').value||'').trim(),
+    bankName: (document.getElementById('aiBankInput').value||'').trim(),
+    maxAuto: Math.max(0, Number(document.getElementById('aiMaxInput').value)||0),
+    enabled: document.getElementById('aiEnabledInput').checked,
+  };
+  if(c.enabled && (!c.apiKey || !c.receiverName || !c.bankName)) return toastErr('ກະລຸນາປ້ອນ API Key, ຊື່ບັນຊີ ແລະ ຊື່ທະນາຄານໃຫ້ຄົບ');
+  localStorage.setItem(AI_CFG_KEY, JSON.stringify(c));
+  _aiTried.clear();
+  toastOk('ບັນທຶກສຳເລັດ');
+}
+function removeAiSlipKey(){
+  const c = getAiCfg(); c.apiKey = ''; c.enabled = false;
+  localStorage.setItem(AI_CFG_KEY, JSON.stringify(c));
+  refreshAiSlipInput();
+  toastOk('ລຶບ API Key ແລ້ວ');
+}
+async function _aiCall(apiKey, content, maxTokens){
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST',
+    headers:{
+      'content-type':'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body: JSON.stringify({ model: AI_MODEL, max_tokens: maxTokens, messages:[{role:'user', content}] })
+  });
+  const data = await res.json().catch(()=>({}));
+  if(!res.ok) throw new Error((data.error && data.error.message) || ('HTTP '+res.status));
+  return (data.content||[]).map(x=>x.type==='text'?x.text:'').join('');
+}
+async function testAiSlipKey(){
+  const key = (document.getElementById('aiKeyInput').value||'').trim();
+  if(!key) return toastErr('ກະລຸນາປ້ອນ API Key ກ່ອນ');
+  toastInfo('ກຳລັງທົດສອບ...');
+  try{ await _aiCall(key, 'Reply with the word OK.', 10); toastOk('API Key ໃຊ້ໄດ້ ✅'); }
+  catch(e){ toastErr('API Key ໃຊ້ບໍ່ໄດ້: '+e.message); }
+}
+// Downscale the slip so the request stays small and fast.
+function _aiPrepareImage(dataUrl){
+  return new Promise((resolve, reject)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const max = 1600; let w = img.width, h = img.height;
+      if(Math.max(w,h) > max){ const r = max/Math.max(w,h); w = Math.round(w*r); h = Math.round(h*r); }
+      const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+      cv.getContext('2d').drawImage(img, 0, 0, w, h);
+      resolve(cv.toDataURL('image/jpeg', 0.85).split(',')[1]);
+    };
+    img.onerror = ()=>reject(new Error('ອ່ານຮູບສະລິບບໍ່ໄດ້'));
+    img.src = dataUrl;
+  });
+}
+async function aiReadSlip(slipDataUrl, apiKey){
+  const b64 = await _aiPrepareImage(slipDataUrl);
+  const now = new Date();
+  const prompt = `You are reading a bank transfer slip image from Laos (any bank: BCEL OnePay, LDB, JDB, APB, STB, Indochina Bank, Phongsavanh, etc.).
+Today is ${now.toISOString().slice(0,10)} (Laos time, UTC+7). Slips may use Buddhist-era years (convert to Gregorian) and dd/mm/yyyy dates.
+Return ONLY one JSON object, no markdown, with these keys:
+{"is_slip": boolean, "amount": number or null (digits only, in LAK unless another currency shows), "currency": string or null, "receiver_name": string or null, "receiver_bank": string or null, "sender_name": string or null, "datetime": "YYYY-MM-DDTHH:mm" or null, "ref": string or null (transaction/reference number), "looks_edited": boolean (true if text looks pasted, misaligned, blurred or inconsistent), "notes": short string}
+Use null when a field is not visible. Do not guess.`;
+  const txt = await _aiCall(apiKey, [
+    {type:'image', source:{type:'base64', media_type:'image/jpeg', data:b64}},
+    {type:'text', text:prompt}
+  ], 700);
+  const m = txt.replace(/```json|```/g,'').match(/\{[\s\S]*\}/);
+  if(!m) throw new Error('AI ຕອບກັບໃນຮູບແບບທີ່ອ່ານບໍ່ໄດ້');
+  const j = JSON.parse(m[0]);
+  return {
+    isSlip: !!j.is_slip, amount: (j.amount==null||isNaN(Number(j.amount)))? null : Number(j.amount),
+    currency: j.currency||null, receiver: j.receiver_name||null, receiverBank: j.receiver_bank||null,
+    sender: j.sender_name||null, datetime: j.datetime||null, ref: j.ref? String(j.ref).trim() : null,
+    edited: !!j.looks_edited, notes: j.notes||''
+  };
+}
+const AI_BANK_GROUPS = [
+  ['bcel',['bcel','banque pour le commerce','onepay','ທະນາຄານການຄ້າຕ່າງປະເທດ','ການຄ້າຕ່າງປະເທດ']],
+  ['ldb',['ldb','lao development','ພັດທະນາລາວ']],
+  ['jdb',['jdb','joint development','ຮ່ວມພັດທະນາ']],
+  ['apb',['apb','agricultural promotion','ສົ່ງເສີມກະສິກຳ']],
+  ['stb',['stb','sacom','ຊາຄອມ']],
+  ['ib',['indochina','ອິນໂດຈີນ']],
+  ['psv',['phongsavanh','phongsavan','ໂພນສະຫວັນ']],
+  ['lvb',['lao-viet','lao viet','lvb','ລາວ-ຫວຽດ','ລາວຫວຽດ']],
+  ['acleda',['acleda','ເອຊີລີດາ']],
+  ['vtb',['vietin','vtb','ຫວຽດຕິນ']],
+  ['mb',['maruhan','ມາຣູຮານ']],
+];
+function _aiBankKey(s){
+  const t = String(s||'').toLowerCase();
+  if(!t.trim()) return '';
+  for(const [k, names] of AI_BANK_GROUPS){ if(names.some(n=>t.includes(n))) return k; }
+  return t.replace(/ທະນາຄານ|bank/g,'').replace(/[^\p{L}\p{N}]/gu,'');
+}
+function _aiNormName(s){
+  return String(s||'').toLowerCase()
+    .replace(/\b(mr|mrs|ms|miss|mstr)\b\.?/g,' ')
+    .replace(/ທ້າວ|ນາງ|ທ່ານ|ທ\.|ນ\./g,' ')
+    .replace(/[^\p{L}\p{N}\s]/gu,' ').replace(/\s+/g,' ').trim();
+}
+function _aiNameMatches(adminName, slipName){
+  const a = _aiNormName(adminName).split(' ').filter(Boolean);
+  const b = _aiNormName(slipName).split(' ').filter(Boolean);
+  if(!a.length || !b.length) return false;
+  const hit = a.filter(x=>b.some(y=> x===y || (Math.min(x.length,y.length)>=2 && (x.startsWith(y)||y.startsWith(x))))).length;
+  return hit / a.length >= 0.6;
+}
+function aiJudgeSlip(t, ai, cfg){
+  const reasons = [];
+  if(!ai.isSlip) reasons.push('ຮູບນີ້ບໍ່ແມ່ນສະລິບໂອນເງິນ');
+  if(ai.edited) reasons.push('ສະລິບມີລັກສະນະຖືກແກ້ໄຂ');
+  if(ai.amount==null) reasons.push('ອ່ານຍອດເງິນບໍ່ໄດ້');
+  else if(ai.amount !== Number(t.amount)) reasons.push(`ຍອດບໍ່ກົງ (ສະລິບ ₭${fmtK(ai.amount)} / ແຈ້ງ ₭${fmtK(t.amount)})`);
+  if(ai.currency && !/^(lak|kip|₭|ກີບ)$/i.test(ai.currency.trim())) reasons.push('ສະກຸນເງິນບໍ່ແມ່ນກີບ ('+ai.currency+')');
+  if(!ai.receiver) reasons.push('ອ່ານຊື່ຜູ້ຮັບບໍ່ໄດ້');
+  else if(!_aiNameMatches(cfg.receiverName, ai.receiver)) reasons.push('ຊື່ຜູ້ຮັບບໍ່ກົງ ('+ai.receiver+')');
+  if(!ai.receiverBank) reasons.push('ອ່ານທະນາຄານຜູ້ຮັບບໍ່ໄດ້');
+  else {
+    const ka=_aiBankKey(cfg.bankName), kb=_aiBankKey(ai.receiverBank);
+    if(!(ka===kb || (ka && kb && (ka.includes(kb)||kb.includes(ka))))) reasons.push('ທະນາຄານຜູ້ຮັບບໍ່ກົງ ('+ai.receiverBank+')');
+  }
+  if(!ai.datetime) reasons.push('ອ່ານວັນເວລາບໍ່ໄດ້');
+  else {
+    const d = new Date(ai.datetime);
+    if(isNaN(d)) reasons.push('ອ່ານວັນເວລາບໍ່ໄດ້');
+    else {
+      if(d.getTime() > Date.now() + 3600*1000) reasons.push('ວັນເວລາໃນສະລິບຢູ່ອະນາຄົດ');
+      if(d.getTime() < new Date(t.createdAt).getTime() - 24*3600*1000) reasons.push('ສະລິບເກົ່າເກີນໄປ (ກ່ອນແຈ້ງ > 24 ຊມ)');
+    }
+  }
+  const all = loadDB(DB_KEYS.topups, []).filter(x=>x.id!==t.id && x.aiRead);
+  if(!ai.ref) reasons.push('ບໍ່ມີເລກອ້າງອີງ');
+  else if(all.some(x=>x.aiRead.ref && String(x.aiRead.ref).toLowerCase()===ai.ref.toLowerCase())) reasons.push('ເລກອ້າງອີງຊ້ຳກັບລາຍການເກົ່າ (ສະລິບຊ້ຳ)');
+  if(cfg.maxAuto && Number(t.amount) > cfg.maxAuto) reasons.push(`ຍອດເກີນວົງເງິນອະນຸມັດອັດຕະໂນມັດ (₭${fmtK(cfg.maxAuto)})`);
+  return reasons;
+}
+const _aiTried = new Set();
+let _aiBusy = false;
+async function aiProcessPendingTopups(){
+  const cfg = getAiCfg();
+  if(!cfg.enabled || !cfg.apiKey || !cfg.receiverName || !cfg.bankName) return;
+  if(_aiBusy) return;
+  _aiBusy = true;
+  try{
+    const todo = loadDB(DB_KEYS.topups, []).filter(t=>t.status==='pending_verification' && !t.aiDecision && t.slip && !_aiTried.has(t.id));
+    for(const t of todo){
+      _aiTried.add(t.id);
+      let ai;
+      try{ ai = await aiReadSlip(t.slip, cfg.apiKey); }
+      catch(e){ console.warn('AI read failed', e); toastErr('AI ກວດສະລິບບໍ່ສຳເລັດ: '+e.message); continue; }
+      const reasons = aiJudgeSlip(t, ai, cfg);
+      const topups = loadDB(DB_KEYS.topups, []);
+      const cur = topups.find(x=>x.id===t.id);
+      if(!cur || cur.status!=='pending_verification') continue;
+      cur.aiRead = ai;
+      const ok = reasons.length===0;
+      cur.aiDecision = ok
+        ? { approved:true, needsReview:false, reasons:[], at:nowISO() }
+        : { approved:false, needsReview:true, reviewReason:reasons.join('; '), reasons, at:nowISO() };
+      saveDB(DB_KEYS.topups, topups);
+      if(ok){
+        await verifyTopup(t.id, true);
+        log('TOPUP_AI_APPROVE', `AI approved topup ${t.id} (ref ${ai.ref})`);
+        Swal.fire({toast:true, position:'top-end', showConfirmButton:false, timer:6000, icon:'success', background:'#0C0607', color:'#F3ECEC', title:'🤖 AI ອະນຸມັດເຕີມເງິນແລ້ວ', text:`₭${fmtK(t.amount)}`});
+      } else {
+        const tab = document.getElementById('adm-topups');
+        if(tab && !tab.classList.contains('hidden')) renderAdminTopups();
+      }
+    }
+  } finally { _aiBusy = false; }
 }
 
 function refreshFbNotifyInput(){
