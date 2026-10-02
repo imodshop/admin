@@ -423,6 +423,9 @@ h1.font-display, h2.font-display{ text-shadow:0 0 18px rgba(225,29,46,.45); }
     </div>
     <label class="text-xs font-display text-mist-400 uppercase mt-4 block">ຊື່ບັນຊີຜູ້ຮັບເງິນ (ຂອງແອດມິນ ຕາມທີ່ຂຶ້ນໃນສະລິບ)</label>
     <input id="aiReceiverInput" type="text" placeholder="e.g. MR TOH SOUKSAVAN" class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
+    <label class="text-xs font-display text-mist-400 uppercase mt-4 block">ເລກບັນຊີຜູ້ຮັບ (ບໍ່ບັງຄັບ, ແຕ່ແນະນຳ — ປ້ອນເຕັມ ຫຼື ເລກ 4 ໂຕໜ້າ + 4 ໂຕຫຼັງ ເຊັ່ນ 1011 3145)</label>
+    <input id="aiAcctInput" type="text" inputmode="numeric" placeholder="e.g. 1011 3145" class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
+    <p class="text-[11px] text-mist-400 mt-1">ຖ້າໃສ່ເລກບັນຊີ ແລະ ກົງກັບສະລິບ ລະບົບຈະບໍ່ຂຶ້ນກັບການທຽບຊື່ (ຊື່ພາສາລາວອ່ານຍາກ).</p>
     <label class="text-xs font-display text-mist-400 uppercase mt-4 block">ຊື່ທະນາຄານຂອງບັນຊີແອດມິນ</label>
     <input id="aiBankInput" type="text" placeholder="e.g. BCEL, LDB, JDB, APB..." class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
     <label class="text-xs font-display text-mist-400 uppercase mt-4 block">ຍອດສູງສຸດທີ່ໃຫ້ AI ອະນຸມັດເອງ (₭, ເວັ້ນວ່າງ = ບໍ່ຈຳກັດ)</label>
@@ -1449,10 +1452,11 @@ function renderAdminTopups(){
     const ai = t.aiRead;
     const aiBlock = ai ? `<div class="mt-2 px-2.5 py-2 rounded-lg bg-plasma-500/10 border border-plasma-500/30 text-[11px] text-mist-200 leading-relaxed">
         <p class="text-plasma-400 font-display font-600 mb-0.5"><i class="fa-solid fa-robot mr-1"></i>AI ອ່ານໄດ້ (ບໍ່ແມ່ນການພິສູດ)</p>
-        💰 ${ai.amount!=null? '₭'+fmtK(ai.amount) : '-'} · 👤 ${escapeHtml(ai.sender||'-')} → ${escapeHtml(ai.receiver||'-')}<br>📅 ${escapeHtml(ai.datetime||'-')} · #${escapeHtml(ai.ref||'-')}
+        💰 ${ai.amount!=null? '₭'+fmtK(ai.amount) : '-'} · 👤 ${escapeHtml(ai.sender||'-')} → ${escapeHtml(ai.receiver||'-')}${ai.receiverAccount?' ('+escapeHtml(ai.receiverAccount)+')':''}<br>📅 ${escapeHtml(ai.datetime||'-')} · #${escapeHtml(ai.ref||'-')}
       </div>` : '';
     const reviewBlock = (t.aiDecision && t.aiDecision.needsReview) ? `<div class="mt-2 px-2.5 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/30 text-[11px] text-yellow-400 leading-relaxed">
         <i class="fa-solid fa-triangle-exclamation mr-1"></i><b>AI ບໍ່ໝັ້ນໃຈ:</b> ${escapeHtml(t.aiDecision.reviewReason||'')} — ກະລຸນາເບິ່ງຮູບໃຫ້ລະອຽດແລ້ວຕັດສິນເອງ
+        <button onclick="aiRecheckTopup('${t.id}')" class="block mt-2 px-3 py-1.5 rounded-lg bg-ink-700 hover:bg-ink-600 text-mist-200 text-[11px] font-display"><i class="fa-solid fa-rotate mr-1"></i>ໃຫ້ AI ກວດໃໝ່</button>
       </div>` : '';
     return `<div class="bg-ink-800/60 border border-ink-700 rounded-xl p-4">
       <img src="${t.slip}" class="w-full h-40 object-cover rounded-lg border border-ink-700 mb-3 cursor-zoom-in" onclick="openImgLightbox('${t.slip}')">
@@ -2159,7 +2163,7 @@ async function verifyOrder(orderId, approve){
 const AI_CFG_KEY = 'vp_ai_slip_cfg';
 const AI_MODEL = 'claude-sonnet-5-5';
 function getAiCfg(){
-  const def = {provider:'gemini', apiKey:'', geminiKey:'', geminiModel:'gemini-3.8-flash', receiverName:'', bankName:'', maxAuto:0, enabled:false};
+  const def = {provider:'gemini', apiKey:'', geminiKey:'', geminiModel:'gemini-3.8-flash', receiverName:'', receiverAccount:'', bankName:'', maxAuto:0, enabled:false};
   try{ return Object.assign(def, JSON.parse(localStorage.getItem(AI_CFG_KEY)||'{}')); }
   catch(e){ return def; }
 }
@@ -2237,6 +2241,7 @@ function _aiFillInputs(){
   document.getElementById('aiGeminiModelInput').value = c.geminiModel || 'gemini-3.8-flash';
   aiToggleProviderFields();
   document.getElementById('aiReceiverInput').value = c.receiverName || '';
+  document.getElementById('aiAcctInput').value = c.receiverAccount || '';
   document.getElementById('aiBankInput').value = c.bankName || '';
   document.getElementById('aiMaxInput').value = c.maxAuto || '';
   document.getElementById('aiEnabledInput').checked = !!c.enabled;
@@ -2253,6 +2258,7 @@ async function saveAiSlipSettings(){
     geminiKey: (document.getElementById('aiGeminiKeyInput').value||'').trim(),
     geminiModel: (document.getElementById('aiGeminiModelInput').value||'').trim() || 'gemini-3.8-flash',
     receiverName: (document.getElementById('aiReceiverInput').value||'').trim(),
+    receiverAccount: (document.getElementById('aiAcctInput').value||'').trim(),
     bankName: (document.getElementById('aiBankInput').value||'').trim(),
     maxAuto: Math.max(0, Number(document.getElementById('aiMaxInput').value)||0),
     enabled: document.getElementById('aiEnabledInput').checked,
@@ -2334,8 +2340,8 @@ async function aiReadSlip(slipDataUrl, cfg){
   const prompt = `You are reading a bank transfer slip image from Laos (any bank: BCEL OnePay, LDB, JDB, APB, STB, Indochina Bank, Phongsavanh, etc.).
 Today is ${now.toISOString().slice(0,10)} (Laos time, UTC+7). Slips may use Buddhist-era years (convert to Gregorian) and dd/mm/yyyy dates.
 Return ONLY one JSON object, no markdown, with these keys:
-{"is_slip": boolean, "amount": number or null (digits only, in LAK unless another currency shows), "currency": string or null, "receiver_name": string or null, "receiver_bank": string or null, "sender_name": string or null, "datetime": "YYYY-MM-DDTHH:mm" or null, "ref": string or null (transaction/reference number), "looks_edited": boolean (true if text looks pasted, misaligned, blurred or inconsistent), "notes": short string}
-Use null when a field is not visible. Do not guess.`;
+{"is_slip": boolean, "amount": number or null (digits only, in LAK unless another currency shows), "currency": string or null, "receiver_name": string or null, "receiver_account": string or null (exactly as shown, may be masked like "1011 **** **** 3145"), "receiver_bank": string or null, "sender_name": string or null, "sender_account": string or null, "layout": string, "direction_basis": string, "datetime": "YYYY-MM-DDTHH:mm" or null, "ref": string or null (transaction/reference number), "looks_edited": boolean (true if text looks pasted, misaligned, blurred or inconsistent), "notes": short string}
+IMPORTANT sender vs receiver (never swap them). Decide in this order:\n1) Explicit labels: From/To, ຈາກ/ໄປຫາ, ຜູ້ໂອນ/ຜູ້ຮັບ, ຕົ້ນທາງ/ປາຍທາງ.\n2) Arrows: the party the arrow points TO is the receiver.\n3) Layout when there are no labels: if the two parties are stacked VERTICALLY, the TOP one is the sender and the one BELOW is the receiver. If they are placed SIDE BY SIDE, the one on the LEFT is the sender and the one on the RIGHT is the receiver.\n4) A faint repeated watermark such as \"To <name>\" names the receiver.\nAlso return \"layout\": one of \"vertical\", \"horizontal\", \"labeled\", \"unknown\", and \"direction_basis\": a few words saying which rule you used.\nUse null when a field is not visible. Do not guess.`;
   let txt;
   if(cfg.provider==='claude'){
     txt = await _aiCall(cfg.apiKey, [
@@ -2354,7 +2360,7 @@ Use null when a field is not visible. Do not guess.`;
   return {
     isSlip: !!j.is_slip, amount: (j.amount==null||isNaN(Number(j.amount)))? null : Number(j.amount),
     currency: j.currency||null, receiver: j.receiver_name||null, receiverBank: j.receiver_bank||null,
-    sender: j.sender_name||null, datetime: j.datetime||null, ref: j.ref? String(j.ref).trim() : null,
+    sender: j.sender_name||null, layout: j.layout||null, basis: j.direction_basis||null, receiverAccount: j.receiver_account? String(j.receiver_account) : null, senderAccount: j.sender_account? String(j.sender_account) : null, datetime: j.datetime||null, ref: j.ref? String(j.ref).trim() : null,
     edited: !!j.looks_edited, notes: j.notes||''
   };
 }
@@ -2378,17 +2384,32 @@ function _aiBankKey(s){
   return t.replace(/ທະນາຄານ|bank/g,'').replace(/[^\p{L}\p{N}]/gu,'');
 }
 function _aiNormName(s){
-  return String(s||'').toLowerCase()
+  return String(s||'').normalize('NFKC').toLowerCase()
+    .replace(/[\u200b-\u200d\ufeff]/g,'')
     .replace(/\b(mr|mrs|ms|miss|mstr)\b\.?/g,' ')
-    .replace(/ທ້າວ|ນາງ|ທ່ານ|ທ\.|ນ\./g,' ')
+    .replace(/ທ້າວ|ນາງ|ທ່ານ/g,' ')
+    .replace(/\p{M}/gu,'')
     .replace(/[^\p{L}\p{N}\s]/gu,' ').replace(/\s+/g,' ').trim();
 }
+// Compares the SHORTER name against the longer one, so "ຕວນ" matches "ຕວນ ວັນນາ" (and vice versa).
 function _aiNameMatches(adminName, slipName){
   const a = _aiNormName(adminName).split(' ').filter(Boolean);
   const b = _aiNormName(slipName).split(' ').filter(Boolean);
   if(!a.length || !b.length) return false;
-  const hit = a.filter(x=>b.some(y=> x===y || (Math.min(x.length,y.length)>=2 && (x.startsWith(y)||y.startsWith(x))))).length;
-  return hit / a.length >= 0.6;
+  const [short, long] = a.length <= b.length ? [a,b] : [b,a];
+  const hit = short.filter(x=>long.some(y=> x===y || (Math.min(x.length,y.length)>=2 && (x.startsWith(y)||y.startsWith(x))))).length;
+  return hit / short.length >= 0.6;
+}
+function _aiAcctParts(txt){
+  const g = String(txt||'').match(/\d+/g) || [];
+  if(!g.length) return null;
+  if(g.length===1) return g[0].length>=8 ? {first:g[0].slice(0,4), last:g[0].slice(-4)} : {first:'', last:g[0].slice(-4)};
+  return {first:g[0].slice(0,4), last:g[g.length-1].slice(-4)};
+}
+function _aiAcctMatches(adminAcct, slipAcct){
+  const a = _aiAcctParts(adminAcct), b = _aiAcctParts(slipAcct);
+  if(!a || !b || !a.last || !b.last) return false;
+  return a.last===b.last && (!a.first || !b.first || a.first===b.first);
 }
 function aiJudgeSlip(t, ai, cfg){
   const reasons = [];
@@ -2397,8 +2418,21 @@ function aiJudgeSlip(t, ai, cfg){
   if(ai.amount==null) reasons.push('ອ່ານຍອດເງິນບໍ່ໄດ້');
   else if(ai.amount !== Number(t.amount)) reasons.push(`ຍອດບໍ່ກົງ (ສະລິບ ₭${fmtK(ai.amount)} / ແຈ້ງ ₭${fmtK(t.amount)})`);
   if(ai.currency && !/^(lak|kip|₭|ກີບ)$/i.test(ai.currency.trim())) reasons.push('ສະກຸນເງິນບໍ່ແມ່ນກີບ ('+ai.currency+')');
-  if(!ai.receiver) reasons.push('ອ່ານຊື່ຜູ້ຮັບບໍ່ໄດ້');
-  else if(!_aiNameMatches(cfg.receiverName, ai.receiver)) reasons.push('ຊື່ຜູ້ຮັບບໍ່ກົງ ('+ai.receiver+')');
+  // Safety net: if the admin's own account/name shows up on the SENDER side, money went OUT, or the AI swapped
+  // the two parties. Either way it must not be auto-approved.
+  const _adminIsSender = (cfg.receiverAccount && ai.senderAccount && _aiAcctMatches(cfg.receiverAccount, ai.senderAccount))
+    || (!ai.receiverAccount && ai.sender && cfg.receiverName && _aiNameMatches(cfg.receiverName, ai.sender) && !(ai.receiver && _aiNameMatches(cfg.receiverName, ai.receiver)));
+  if(_adminIsSender) reasons.push('ຊື່/ບັນຊີຂອງແອດມິນຢູ່ຝັ່ງຜູ້ໂອນ — ກວດທິດທາງການໂອນ');
+  let acctOk = false;
+  if(cfg.receiverAccount){
+    if(!ai.receiverAccount) reasons.push('ອ່ານເລກບັນຊີຜູ້ຮັບບໍ່ໄດ້');
+    else if(_aiAcctMatches(cfg.receiverAccount, ai.receiverAccount)) acctOk = true;
+    else reasons.push('ເລກບັນຊີຜູ້ຮັບບໍ່ກົງ ('+ai.receiverAccount+')');
+  }
+  if(!acctOk){
+    if(!ai.receiver) reasons.push('ອ່ານຊື່ຜູ້ຮັບບໍ່ໄດ້');
+    else if(!_aiNameMatches(cfg.receiverName, ai.receiver)) reasons.push('ຊື່ຜູ້ຮັບບໍ່ກົງ ('+ai.receiver+')');
+  }
   if(!ai.receiverBank) reasons.push('ອ່ານທະນາຄານຜູ້ຮັບບໍ່ໄດ້');
   else {
     const ka=_aiBankKey(cfg.bankName), kb=_aiBankKey(ai.receiverBank);
@@ -2406,7 +2440,8 @@ function aiJudgeSlip(t, ai, cfg){
   }
   if(!ai.datetime) reasons.push('ອ່ານວັນເວລາບໍ່ໄດ້');
   else {
-    const d = new Date(ai.datetime);
+    // slips are Laos time (UTC+7); don't depend on the admin device's timezone
+    const d = new Date(/(Z|[+-]\d\d:?\d\d)$/.test(ai.datetime) ? ai.datetime : ai.datetime + '+07:00');
     if(isNaN(d)) reasons.push('ອ່ານວັນເວລາບໍ່ໄດ້');
     else {
       if(d.getTime() > Date.now() + 3600*1000) reasons.push('ວັນເວລາໃນສະລິບຢູ່ອະນາຄົດ');
@@ -2419,7 +2454,27 @@ function aiJudgeSlip(t, ai, cfg){
   if(cfg.maxAuto && Number(t.amount) > cfg.maxAuto) reasons.push(`ຍອດເກີນວົງເງິນອະນຸມັດອັດຕະໂນມັດ (₭${fmtK(cfg.maxAuto)})`);
   return reasons;
 }
+// Messenger alert (CallMeBot) using the same API key as the "ແຈ້ງເຕືອນເຟສບຸກ" tab. Best-effort only.
+function adminFbNotify(message){
+  try{
+    const settings = loadDB(DB_KEYS.settings, {});
+    if(!settings.fbApiKey) return;
+    const pixel = new Image();
+    pixel.src = `https://api.callmebot.com/facebook/send.php?apikey=${encodeURIComponent(settings.fbApiKey)}&text=${encodeURIComponent(message)}`;
+  }catch(e){}
+}
 const _aiTried = new Set();
+async function aiRecheckTopup(id){
+  const topups = loadDB(DB_KEYS.topups, []);
+  const t = topups.find(x=>x.id===id); if(!t || t.status!=='pending_verification') return;
+  delete t.aiDecision; delete t.aiRead;
+  saveDB(DB_KEYS.topups, topups);
+  _aiTried.delete(id);
+  toastInfo('ກຳລັງໃຫ້ AI ກວດໃໝ່...');
+  renderAdminTopups();
+  await aiProcessPendingTopups();
+  renderAdminTopups();
+}
 let _aiBusy = false;
 async function aiProcessPendingTopups(){
   const cfg = getAiCfg();
@@ -2445,6 +2500,11 @@ async function aiProcessPendingTopups(){
       saveDB(DB_KEYS.topups, topups);
       if(ok){
         await verifyTopup(t.id, true);
+        const done = loadDB(DB_KEYS.topups, []).find(x=>x.id===t.id);
+        if(done && done.status==='completed'){
+          const u = loadDB(DB_KEYS.users, []).find(x=>x.id===t.userId) || {};
+          adminFbNotify(`🤖 AI ອະນຸມັດການເຕີມເງິນແລ້ວ ✅\n🏪 TOH Shop\n👤 ຊື່ຜູ້ໃຊ້: ${t.username || u.username || '-'}\n💰 ຈຳນວນເງິນ: ₭${fmtK(t.amount)}\n📞 ເບີໂທ: ${t.phone || u.phone || '-'}\n🧾 ເລກອ້າງອີງ: ${ai.ref || '-'}\n🏦 ${ai.sender || '-'} → ${ai.receiver || '-'}`);
+        }
         log('TOPUP_AI_APPROVE', `AI approved topup ${t.id} (ref ${ai.ref})`);
         Swal.fire({toast:true, position:'top-end', showConfirmButton:false, timer:6000, icon:'success', background:'#0C0607', color:'#F3ECEC', title:'🤖 AI ອະນຸມັດເຕີມເງິນແລ້ວ', text:`₭${fmtK(t.amount)}`});
       } else {
