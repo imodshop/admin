@@ -184,6 +184,7 @@ h1.font-display, h2.font-display{ text-shadow:0 0 18px rgba(225,29,46,.45); }
           <button onclick="adminTab('orders')" data-tab="orders" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-cart-shopping w-4"></i> ຈັດການອໍເດີ</button>
           <button onclick="adminTab('payments')" data-tab="payments" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-money-check-dollar w-4"></i> ຢືນຢັນການຊຳລະ</button>
           <button onclick="adminTab('topups')" data-tab="topups" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-wallet w-4"></i> ຢືນຢັນການເຕີມເງິນ <span id="topupBadge" class="hidden ml-1 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold align-middle"></span></button>
+          <button onclick="adminTab('wallet')" data-tab="wallet" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-money-bill-transfer w-4"></i> ເຕີມ / ຫັກເງິນ (ດ້ວຍເບີ)</button>
           <button onclick="adminTab('codes')" data-tab="codes" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-ticket w-4"></i> ໂຄດເຕີມເງິນ</button>
           <button onclick="adminTab('qrsettings')" data-tab="qrsettings" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-qrcode w-4"></i> ຕັ້ງຄ່າ QR ຊຳລະເງິນ</button>
           <button onclick="adminTab('bgsettings')" data-tab="bgsettings" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-image w-4"></i> ຕັ້ງຄ່າພື້ນຫຼັງເວັບ</button>
@@ -252,6 +253,19 @@ h1.font-display, h2.font-display{ text-shadow:0 0 18px rgba(225,29,46,.45); }
     <p class="font-display text-mist-100 font-600 mb-1">ການຕັດສິນຂອງ AI ຫຼ້າສຸດ</p>
     <p class="text-xs text-mist-400 mb-3">ລາຍການທີ່ AI ອະນຸມັດ/ປະຕິເສດອັດຕະໂນມັດແລ້ວ — ກວດຄືນ ແລະ ແກ້ໄຂໄດ້ຖ້າ AI ຕັດສິນຜິດ</p>
     <div id="admAiDecisionsList" class="space-y-2"></div>
+  </div>
+</div>
+
+<div id="adm-wallet" class="admincontent hidden">
+  <h2 class="font-display font-700 text-2xl text-mist-100 mb-1">ເຕີມ / ຫັກເງິນ ດ້ວຍເບີໂທ</h2>
+  <p class="text-xs text-mist-400 mb-5">ໃສ່ເບີລູກຄ້າ ແລ້ວກົດຄົ້ນຫາ ຈະເຫັນຍອດເງິນເກົ່າ ກ່ອນເຕີມ ຫຼື ຫັກ (ສະເພາະແອັດມິນ)</p>
+  <div class="bg-ink-800/60 border border-ink-700 rounded-xl p-4 max-w-xl">
+    <label class="text-xs text-mist-400 font-display">ເບີໂທລູກຄ້າ</label>
+    <div class="flex gap-2 mt-1">
+      <input id="walletPhone" type="tel" inputmode="numeric" placeholder="ເຊັ່ນ 02012345678" onkeydown="if(event.key==='Enter')walletSearch()" class="flex-1 px-3 py-2 rounded-lg bg-ink-900 border border-ink-600 text-mist-100 text-sm outline-none focus:border-ion-400">
+      <button onclick="walletSearch()" class="px-4 py-2 rounded-lg bg-ion-500/20 text-ion-400 hover:bg-ion-500/30 text-sm font-display"><i class="fa-solid fa-magnifying-glass mr-1"></i>ຄົ້ນຫາ</button>
+    </div>
+    <div id="walletResult" class="mt-4"></div>
   </div>
 </div>
 
@@ -689,6 +703,25 @@ const ADMIN_SYNC_KEYS = ['admins','products','orders','logs','topups','settings'
 const _pendingSyncs = new Map();
 // PERF: coalesce rapid saves of the same key (e.g. product save + log() + order save)
 // into ONE Firestore write of the latest value, instead of one big write per call.
+// SAFE CLOUD WRITE: never overwrite shop data blindly.
+//  - if the cloud copy can't be read, the write is aborted (no blind overwrite)
+//  - a non-admin device can never shrink existing cloud data to empty / <50%
+//  - before any big shrink (or wipe), the previous cloud copy is saved to shopDataBackup/<key>
+async function _guardedCloudSet(key, val){
+  const ref = fbDb.collection(CLOUD_COLLECTION).doc(key);
+  let old = null;
+  try{ const s = await ref.get(); old = s.exists ? (s.data() && s.data().data) : null; }
+  catch(e){ console.warn('Cloud read before write failed, write aborted for', key, e); return; }
+  const isEmpty = v => v==null || (Array.isArray(v) ? v.length===0 : (typeof v==='object' && Object.keys(v).length===0));
+  const isAdmin = typeof SESSION !== 'undefined' && SESSION && SESSION.role==='admin';
+  if(old!=null && !isEmpty(old)){
+    const a = JSON.stringify(old).length, b = JSON.stringify(val==null?null:val).length;
+    const shrink = isEmpty(val) || b < a*0.5;
+    if(shrink && !isAdmin){ console.warn('Blocked destructive write from non-admin for', key); return; }
+    if(shrink){ try{ await fbDb.collection('shopDataBackup').doc(key).set({ data: old, savedAt: nowISO() }); }catch(e){ console.warn('backup failed', e); } }
+  }
+  await ref.set({ data: val, updatedAt: nowISO() });
+}
 const _syncQueue = {};
 function syncKeyToFirestore(key, val){
   let q = _syncQueue[key];
@@ -703,7 +736,7 @@ function syncKeyToFirestore(key, val){
       clearTimeout(q.timer);
       try{
         if(!fbAuth.currentUser) return;
-        await fbDb.collection(CLOUD_COLLECTION).doc(key).set({ data: q.val, updatedAt: nowISO() });
+        await _guardedCloudSet(key, q.val);
       }catch(e){
         console.warn('Firestore sync failed for', key, e);
         if(SESSION && SESSION.role==='admin' && typeof toastErr === 'function'){
@@ -852,20 +885,22 @@ const CATEGORIES = [
 ];
 
 async function seedIfNeeded(){
+  // LOCAL-ONLY seeding: never push empty defaults to Firestore, otherwise a failed
+  // pull on a fresh browser would overwrite the real shop data in the cloud.
+  const seedLocal = (k, v) => { if(!localStorage.getItem(k)) localStorage.setItem(k, JSON.stringify(v)); };
   let admins = loadDB(DB_KEYS.admins, []);
   if(admins.length === 0){
     const salt = genSalt();
     const hash = await hashPassword('TOH02094357757', salt);
     admins.push({ id: uid('adm'), email: 'toh94357757@gmail.com', phone: '02094357757', passwordHash: hash, salt: salt, role: 'admin', createdAt: nowISO() });
-    saveDB(DB_KEYS.admins, admins);
-    log('SEED', 'Admin account seeded automatically on first install.');
+    localStorage.setItem(DB_KEYS.admins, JSON.stringify(admins));
   }
-  if(loadDB(DB_KEYS.products, []).length === 0) saveDB(DB_KEYS.products, []);
-  if(loadDB(DB_KEYS.users, []).length === 0) saveDB(DB_KEYS.users, []);
-  if(loadDB(DB_KEYS.orders, []).length === 0) saveDB(DB_KEYS.orders, []);
-  if(loadDB(DB_KEYS.logs, []).length === 0) saveDB(DB_KEYS.logs, []);
-  if(loadDB(DB_KEYS.topups, []).length === 0) saveDB(DB_KEYS.topups, []);
-  if(!localStorage.getItem(DB_KEYS.settings)) saveDB(DB_KEYS.settings, { qrImage: null, bgImage: null, heroBannerImage: null, siteLogo: null, siteName: '', promoText: '', promoText2: '', fbApiKey: '', adminPanelUrl: 'https://admin94357757.netlify.app' });
+  seedLocal(DB_KEYS.products, []);
+  seedLocal(DB_KEYS.users, []);
+  seedLocal(DB_KEYS.orders, []);
+  seedLocal(DB_KEYS.logs, []);
+  seedLocal(DB_KEYS.topups, []);
+  seedLocal(DB_KEYS.settings, { qrImage: null, bgImage: null, heroBannerImage: null, siteLogo: null, siteName: '', promoText: '', promoText2: '', fbApiKey: '', adminPanelUrl: 'https://admin94357757.netlify.app' });
 }
 
 function log(action, detail){
@@ -1475,11 +1510,12 @@ async function checkNewTopups(){
     newOnes.forEach(t=>{
       _seenTopupIds.add(t.id);
       const u = users.find(x=>x.id===t.userId) || {username:'-'};
+      const phone = t.phone || u.phone || '-';
       Swal.fire({
-        toast:true, position:'top-end', showConfirmButton:false, timer:7000, timerProgressBar:true,
+        toast:true, position:'top-end', showConfirmButton:false, timer:10000, timerProgressBar:true,
         icon:'info', background:'#0C0607', color:'#F3ECEC',
-        title:'ມີການແຈ້ງເຕີມເງິນໃໝ່!',
-        html:`<div style="font-size:13px;">${escapeHtml(u.username)} · ₭${fmtK(t.amount)}</div>`,
+        title:'🔔 ລູກຄ້າແຈ້ງເຕີມເງິນ ຮ້ານ TOH Shop',
+        html:`<div style="font-size:13px;text-align:left;line-height:1.7;">👤 ${escapeHtml(t.username || u.username)}<br>💰 ₭${fmtK(t.amount)}<br>📞 ${escapeHtml(phone)}</div>`,
       });
     });
     _saveSeenTopups();
@@ -1932,6 +1968,74 @@ async function adminTopupUser(userId){
   });
 }
 
+
+// ---- Wallet by phone number: admin-only top-up / deduct ----
+let _walletUserId = null;
+function _phoneKey(v){ return String(v||'').replace(/\D/g,'').slice(-8); }   // matches 020xxxxxxxx / 20xxxxxxxx / 85620xxxxxxxx
+async function walletSearch(){
+  const key = _phoneKey(document.getElementById('walletPhone').value);
+  const box = document.getElementById('walletResult');
+  if(key.length < 8){ box.innerHTML=''; return toastErr('ກະລຸນາປ້ອນເບີໂທໃຫ້ຄົບ'); }
+  box.innerHTML = '<p class="text-xs text-mist-400">ກຳລັງຄົ້ນຫາ...</p>';
+  let users = loadDB(DB_KEYS.users, []);
+  try{ users = await syncAllUsersFromFirestore(true); }catch(e){}
+  const u = (users||[]).find(x=>_phoneKey(x.phone)===key);
+  if(!u){ _walletUserId = null; box.innerHTML = '<p class="text-sm text-red-400"><i class="fa-solid fa-circle-xmark mr-1"></i>ບໍ່ພົບເບີນີ້ໃນລະບົບ</p>'; return; }
+  _walletUserId = u.id;
+  let bal = Number(u.balance)||0;
+  try{ const snap = await fbDb.collection('users').doc(u.id).get(); if(snap.exists) bal = Number(snap.data().balance)||0; }catch(e){}
+  _walletRender(u, bal, null);
+}
+function _walletRender(u, bal, note){
+  document.getElementById('walletResult').innerHTML = `
+    <div class="rounded-lg border border-ink-700 bg-ink-900/60 p-3">
+      <p class="text-sm text-mist-100 font-display">${escapeHtml(u.username)} <span class="text-mist-400 font-mono text-xs">· ${escapeHtml(u.phone||'')}</span></p>
+      <p class="text-xs text-mist-400 mt-2">ຍອດເງິນປັດຈຸບັນ (ເກົ່າ)</p>
+      <p class="font-mono text-2xl text-ion-400 font-600">₭ ${fmtK(bal)}</p>
+      ${note ? `<p class="text-xs text-green-400 mt-2">${note}</p>` : ''}
+    </div>
+    <label class="text-xs text-mist-400 font-display block mt-4">ຈຳນວນເງິນ (₭)</label>
+    <input id="walletAmount" type="number" inputmode="numeric" min="1" placeholder="ເຊັ່ນ 50000" class="w-full mt-1 px-3 py-2 rounded-lg bg-ink-900 border border-ink-600 text-mist-100 text-sm outline-none focus:border-ion-400">
+    <div class="flex gap-2 mt-3">
+      <button onclick="walletApply('add')" class="flex-1 py-2.5 rounded-lg bg-green-500/20 text-green-400 hover:bg-green-500/30 text-sm font-display"><i class="fa-solid fa-plus mr-1"></i>ເຕີມເງິນ</button>
+      <button onclick="walletApply('deduct')" class="flex-1 py-2.5 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 text-sm font-display"><i class="fa-solid fa-minus mr-1"></i>ຫັກເງິນ</button>
+    </div>`;
+}
+async function walletApply(mode){
+  if(!_walletUserId) return toastErr('ກະລຸນາຄົ້ນຫາເບີກ່ອນ');
+  const amount = parseInt(document.getElementById('walletAmount').value, 10) || 0;
+  if(amount <= 0) return toastErr('ກະລຸນາປ້ອນຈຳນວນເງິນທີ່ຖືກຕ້ອງ');
+  const u = loadDB(DB_KEYS.users, []).find(x=>x.id===_walletUserId);
+  if(!u) return toastErr('ບໍ່ພົບຜູ້ໃຊ້');
+  const isAdd = mode === 'add';
+  const c = await Swal.fire({
+    title: isAdd ? 'ຢືນຢັນເຕີມເງິນ' : 'ຢືນຢັນຫັກເງິນ',
+    html: `<b>${escapeHtml(u.username)}</b> · ${escapeHtml(u.phone||'')}<br><span style="font-size:20px">₭ ${fmtK(amount)}</span>`,
+    showCancelButton: true, confirmButtonText: isAdd ? 'ເຕີມເງິນ' : 'ຫັກເງິນ', cancelButtonText: 'ຍົກເລີກ',
+    background:'#0C0607', color:'#F3ECEC', confirmButtonColor: isAdd ? '#22C55E' : '#EF4444', cancelButtonColor:'#4A2830'
+  });
+  if(!c.isConfirmed) return;
+  let after;
+  try{ after = await adjustUserBalance(u.id, isAdd ? amount : -amount, { strict: !isAdd }); }
+  catch(e){
+    if(e && e.message === 'INSUFFICIENT_BALANCE') return toastErr('ຍອດເງິນບໍ່ພໍໃຫ້ຫັກ');
+    console.warn(e); return toastErr('ອັບເດດຍອດເງິນບໍ່ສຳເລັດ');
+  }
+  const before = isAdd ? after - amount : after + amount;
+  if(isAdd){
+    const tp = loadDB(DB_KEYS.topups, []);
+    tp.push({ id: uid('top'), userId: u.id, amount, slip:null, status:'completed', source:'admin', createdAt: nowISO(), verifiedAt: nowISO() });
+    saveDB(DB_KEYS.topups, tp);
+    notifyUser(u.id, 'ເຕີມເງິນໂດຍແອດມິນ', `ແອດມິນໄດ້ເຕີມເງິນ ₭${fmtK(amount)} ເຂົ້າກະເປົາຂອງທ່ານ.`);
+    log('ADMIN_TOPUP', `Admin credited ₭${amount} to ${u.username} (${u.phone}) by phone: ₭${before} -> ₭${after}`);
+  } else {
+    notifyUser(u.id, 'ຫັກເງິນໂດຍແອດມິນ', `ແອດມິນໄດ້ຫັກເງິນ ₭${fmtK(amount)} ຈາກກະເປົາຂອງທ່ານ.`);
+    log('ADMIN_DEDUCT', `Admin deducted ₭${amount} from ${u.username} (${u.phone}): ₭${before} -> ₭${after}`);
+  }
+  toastOk(`${isAdd?'ເຕີມ':'ຫັກ'}ເງິນ ₭${fmtK(amount)} ສຳເລັດ`);
+  _walletRender(u, after, `ຍອດເກົ່າ ₭${fmtK(before)} → ຍອດໃໝ່ ₭${fmtK(after)}`);
+  try{ renderAdminOverview(); }catch(e){}
+}
 
 function renderAdminOrders(){
   const orders = loadDB(DB_KEYS.orders,[]).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
