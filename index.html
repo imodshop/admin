@@ -405,8 +405,22 @@ h1.font-display, h2.font-display{ text-shadow:0 0 18px rgba(225,29,46,.45); }
   <div class="bg-ink-800/60 border border-ink-700 rounded-xl p-6 max-w-lg">
     <p class="text-sm text-mist-400 mb-2">ເມື່ອລູກຄ້າແຈ້ງເຕີມເງິນ, AI ຈະອ່ານຮູບສະລິບ (ທະນາຄານໃດກໍ່ໄດ້) ແລ້ວທຽບກັບຍອດທີ່ແຈ້ງ ແລະ ບັນຊີຂອງທ່ານ. ຖ້າຖືກຕ້ອງທັງໝົດ ຈະເຕີມເງິນໃຫ້ອັດຕະໂນມັດ, ຖ້າບໍ່ກົງ ຫຼື ບໍ່ແນ່ໃຈ ຈະສົ່ງໃຫ້ແອດມິນກວດເອງ (AI ບໍ່ປະຕິເສດເອງ).</p>
     <p class="text-xs text-yellow-400 mb-4"><i class="fa-solid fa-triangle-exclamation mr-1"></i>ກວດສະເພາະຕອນທີ່ໜ້າແອດມິນເປີດຢູ່. API Key ເກັບໃນບຣາວເຊີນີ້ເທົ່ານັ້ນ (ບໍ່ຊິງຄ໌ຂຶ້ນ cloud).</p>
-    <label class="text-xs font-display text-mist-400 uppercase">Anthropic API Key</label>
-    <input id="aiKeyInput" type="password" autocomplete="off" placeholder="sk-ant-..." class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
+    <label class="text-xs font-display text-mist-400 uppercase">ເລືອກ AI</label>
+    <select id="aiProviderInput" onchange="aiToggleProviderFields()" class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
+      <option value="gemini">Google Gemini (ມີ free tier)</option>
+      <option value="claude">Claude (Anthropic, ເສຍເງິນ)</option>
+    </select>
+    <div id="aiGeminiFields">
+      <label class="text-xs font-display text-mist-400 uppercase mt-4 block">Gemini API Key <span class="normal-case text-mist-400">(ຮັບຟຣີທີ່ aistudio.google.com/app/apikey)</span></label>
+      <input id="aiGeminiKeyInput" type="password" autocomplete="off" placeholder="AIza..." class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
+      <label class="text-xs font-display text-mist-400 uppercase mt-4 block">ຊື່ໂມເດວ Gemini</label>
+      <input id="aiGeminiModelInput" type="text" placeholder="gemini-2.5-flash" class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
+      <p class="text-[11px] text-yellow-400 mt-1.5">Free tier ມີຂີດຈຳກັດຈຳນວນຄຳຂໍ, ແລະ Google ອາດນຳຂໍ້ມູນໄປປັບປຸງຜະລິດຕະພັນ (ສະລິບມີຊື່/ເລກບັນຊີ).</p>
+    </div>
+    <div id="aiClaudeFields" class="hidden">
+      <label class="text-xs font-display text-mist-400 uppercase mt-4 block">Anthropic API Key</label>
+      <input id="aiKeyInput" type="password" autocomplete="off" placeholder="sk-ant-..." class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
+    </div>
     <label class="text-xs font-display text-mist-400 uppercase mt-4 block">ຊື່ບັນຊີຜູ້ຮັບເງິນ (ຂອງແອດມິນ ຕາມທີ່ຂຶ້ນໃນສະລິບ)</label>
     <input id="aiReceiverInput" type="text" placeholder="e.g. MR TOH SOUKSAVAN" class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
     <label class="text-xs font-display text-mist-400 uppercase mt-4 block">ຊື່ທະນາຄານຂອງບັນຊີແອດມິນ</label>
@@ -2144,12 +2158,23 @@ async function verifyOrder(orderId, approve){
 const AI_CFG_KEY = 'vp_ai_slip_cfg';
 const AI_MODEL = 'claude-sonnet-5-5';
 function getAiCfg(){
-  try{ return Object.assign({apiKey:'', receiverName:'', bankName:'', maxAuto:0, enabled:false}, JSON.parse(localStorage.getItem(AI_CFG_KEY)||'{}')); }
-  catch(e){ return {apiKey:'', receiverName:'', bankName:'', maxAuto:0, enabled:false}; }
+  const def = {provider:'gemini', apiKey:'', geminiKey:'', geminiModel:'gemini-2.5-flash', receiverName:'', bankName:'', maxAuto:0, enabled:false};
+  try{ return Object.assign(def, JSON.parse(localStorage.getItem(AI_CFG_KEY)||'{}')); }
+  catch(e){ return def; }
+}
+function aiActiveKey(c){ return c.provider==='claude' ? c.apiKey : c.geminiKey; }
+function aiToggleProviderFields(){
+  const p = document.getElementById('aiProviderInput').value;
+  document.getElementById('aiGeminiFields').classList.toggle('hidden', p!=='gemini');
+  document.getElementById('aiClaudeFields').classList.toggle('hidden', p!=='claude');
 }
 function refreshAiSlipInput(){
   const c = getAiCfg();
+  document.getElementById('aiProviderInput').value = c.provider;
   document.getElementById('aiKeyInput').value = c.apiKey || '';
+  document.getElementById('aiGeminiKeyInput').value = c.geminiKey || '';
+  document.getElementById('aiGeminiModelInput').value = c.geminiModel || 'gemini-2.5-flash';
+  aiToggleProviderFields();
   document.getElementById('aiReceiverInput').value = c.receiverName || '';
   document.getElementById('aiBankInput').value = c.bankName || '';
   document.getElementById('aiMaxInput').value = c.maxAuto || '';
@@ -2157,19 +2182,22 @@ function refreshAiSlipInput(){
 }
 function saveAiSlipSettings(){
   const c = {
+    provider: document.getElementById('aiProviderInput').value,
     apiKey: (document.getElementById('aiKeyInput').value||'').trim(),
+    geminiKey: (document.getElementById('aiGeminiKeyInput').value||'').trim(),
+    geminiModel: (document.getElementById('aiGeminiModelInput').value||'').trim() || 'gemini-2.5-flash',
     receiverName: (document.getElementById('aiReceiverInput').value||'').trim(),
     bankName: (document.getElementById('aiBankInput').value||'').trim(),
     maxAuto: Math.max(0, Number(document.getElementById('aiMaxInput').value)||0),
     enabled: document.getElementById('aiEnabledInput').checked,
   };
-  if(c.enabled && (!c.apiKey || !c.receiverName || !c.bankName)) return toastErr('ກະລຸນາປ້ອນ API Key, ຊື່ບັນຊີ ແລະ ຊື່ທະນາຄານໃຫ້ຄົບ');
+  if(c.enabled && (!aiActiveKey(c) || !c.receiverName || !c.bankName)) return toastErr('ກະລຸນາປ້ອນ API Key ຂອງ AI ທີ່ເລືອກ, ຊື່ບັນຊີ ແລະ ຊື່ທະນາຄານໃຫ້ຄົບ');
   localStorage.setItem(AI_CFG_KEY, JSON.stringify(c));
   _aiTried.clear();
   toastOk('ບັນທຶກສຳເລັດ');
 }
 function removeAiSlipKey(){
-  const c = getAiCfg(); c.apiKey = ''; c.enabled = false;
+  const c = getAiCfg(); c.apiKey = ''; c.geminiKey = ''; c.enabled = false;
   localStorage.setItem(AI_CFG_KEY, JSON.stringify(c));
   refreshAiSlipInput();
   toastOk('ລຶບ API Key ແລ້ວ');
@@ -2189,11 +2217,30 @@ async function _aiCall(apiKey, content, maxTokens){
   if(!res.ok) throw new Error((data.error && data.error.message) || ('HTTP '+res.status));
   return (data.content||[]).map(x=>x.type==='text'?x.text:'').join('');
 }
+async function _geminiCall(apiKey, model, parts, maxTokens){
+  const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent', {
+    method:'POST',
+    headers:{ 'content-type':'application/json', 'x-goog-api-key': apiKey },
+    body: JSON.stringify({ contents:[{role:'user', parts}], generationConfig:{ maxOutputTokens: maxTokens, temperature: 0 } })
+  });
+  const data = await res.json().catch(()=>({}));
+  if(!res.ok) throw new Error((data.error && data.error.message) || ('HTTP '+res.status));
+  const cand = data.candidates && data.candidates[0];
+  const out = cand && cand.content && cand.content.parts ? cand.content.parts.map(x=>x.text||'').join('') : '';
+  if(!out) throw new Error('Gemini ບໍ່ສົ່ງຄຳຕອບກັບມາ'+(cand&&cand.finishReason?' ('+cand.finishReason+')':''));
+  return out;
+}
 async function testAiSlipKey(){
-  const key = (document.getElementById('aiKeyInput').value||'').trim();
+  const p = document.getElementById('aiProviderInput').value;
+  const key = ((p==='claude'? document.getElementById('aiKeyInput') : document.getElementById('aiGeminiKeyInput')).value||'').trim();
   if(!key) return toastErr('ກະລຸນາປ້ອນ API Key ກ່ອນ');
+  const model = (document.getElementById('aiGeminiModelInput').value||'').trim() || 'gemini-2.5-flash';
   toastInfo('ກຳລັງທົດສອບ...');
-  try{ await _aiCall(key, 'Reply with the word OK.', 10); toastOk('API Key ໃຊ້ໄດ້ ✅'); }
+  try{
+    if(p==='claude') await _aiCall(key, 'Reply with the word OK.', 10);
+    else await _geminiCall(key, model, [{text:'Reply with the word OK.'}], 64);
+    toastOk('API Key ໃຊ້ໄດ້ ✅');
+  }
   catch(e){ toastErr('API Key ໃຊ້ບໍ່ໄດ້: '+e.message); }
 }
 // Downscale the slip so the request stays small and fast.
@@ -2211,7 +2258,7 @@ function _aiPrepareImage(dataUrl){
     img.src = dataUrl;
   });
 }
-async function aiReadSlip(slipDataUrl, apiKey){
+async function aiReadSlip(slipDataUrl, cfg){
   const b64 = await _aiPrepareImage(slipDataUrl);
   const now = new Date();
   const prompt = `You are reading a bank transfer slip image from Laos (any bank: BCEL OnePay, LDB, JDB, APB, STB, Indochina Bank, Phongsavanh, etc.).
@@ -2219,10 +2266,18 @@ Today is ${now.toISOString().slice(0,10)} (Laos time, UTC+7). Slips may use Budd
 Return ONLY one JSON object, no markdown, with these keys:
 {"is_slip": boolean, "amount": number or null (digits only, in LAK unless another currency shows), "currency": string or null, "receiver_name": string or null, "receiver_bank": string or null, "sender_name": string or null, "datetime": "YYYY-MM-DDTHH:mm" or null, "ref": string or null (transaction/reference number), "looks_edited": boolean (true if text looks pasted, misaligned, blurred or inconsistent), "notes": short string}
 Use null when a field is not visible. Do not guess.`;
-  const txt = await _aiCall(apiKey, [
-    {type:'image', source:{type:'base64', media_type:'image/jpeg', data:b64}},
-    {type:'text', text:prompt}
-  ], 700);
+  let txt;
+  if(cfg.provider==='claude'){
+    txt = await _aiCall(cfg.apiKey, [
+      {type:'image', source:{type:'base64', media_type:'image/jpeg', data:b64}},
+      {type:'text', text:prompt}
+    ], 700);
+  } else {
+    txt = await _geminiCall(cfg.geminiKey, cfg.geminiModel || 'gemini-2.5-flash', [
+      {inline_data:{mime_type:'image/jpeg', data:b64}},
+      {text:prompt}
+    ], 2048);
+  }
   const m = txt.replace(/```json|```/g,'').match(/\{[\s\S]*\}/);
   if(!m) throw new Error('AI ຕອບກັບໃນຮູບແບບທີ່ອ່ານບໍ່ໄດ້');
   const j = JSON.parse(m[0]);
@@ -2298,7 +2353,7 @@ const _aiTried = new Set();
 let _aiBusy = false;
 async function aiProcessPendingTopups(){
   const cfg = getAiCfg();
-  if(!cfg.enabled || !cfg.apiKey || !cfg.receiverName || !cfg.bankName) return;
+  if(!cfg.enabled || !aiActiveKey(cfg) || !cfg.receiverName || !cfg.bankName) return;
   if(_aiBusy) return;
   _aiBusy = true;
   try{
@@ -2306,7 +2361,7 @@ async function aiProcessPendingTopups(){
     for(const t of todo){
       _aiTried.add(t.id);
       let ai;
-      try{ ai = await aiReadSlip(t.slip, cfg.apiKey); }
+      try{ ai = await aiReadSlip(t.slip, cfg); }
       catch(e){ console.warn('AI read failed', e); toastErr('AI ກວດສະລິບບໍ່ສຳເລັດ: '+e.message); continue; }
       const reasons = aiJudgeSlip(t, ai, cfg);
       const topups = loadDB(DB_KEYS.topups, []);
