@@ -433,6 +433,7 @@ h1.font-display, h2.font-display{ text-shadow:0 0 18px rgba(225,29,46,.45); }
       <button onclick="testAiSlipKey()" class="px-5 py-2.5 rounded-lg bg-ion-500 hover:bg-ion-600 text-ink-950 font-display font-600 text-sm"><i class="fa-solid fa-plug mr-1"></i>ທົດສອບ Key</button>
       <button onclick="removeAiSlipKey()" class="px-5 py-2.5 rounded-lg bg-ink-700 hover:bg-ink-600 text-mist-300 font-display font-600 text-sm">ລຶບ Key</button>
     </div>
+    <p id="aiSavedStatus" class="text-xs mt-3 text-mist-400"></p>
   </div>
 </div>
 <div id="adm-fbnotify" class="admincontent hidden">
@@ -2168,7 +2169,67 @@ function aiToggleProviderFields(){
   document.getElementById('aiGeminiFields').classList.toggle('hidden', p!=='gemini');
   document.getElementById('aiClaudeFields').classList.toggle('hidden', p!=='claude');
 }
-function refreshAiSlipInput(){
+// ---- Persistence: localStorage + IndexedDB + (best-effort) the admin's own cloud user doc ----
+function _aiIdb(){ return new Promise((res,rej)=>{ const r = indexedDB.open('vp_ai',1); r.onupgradeneeded=()=>r.result.createObjectStore('kv'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+async function _aiIdbSet(v){
+  try{ const db = await _aiIdb(); await new Promise((res,rej)=>{ const tx=db.transaction('kv','readwrite'); if(v==null) tx.objectStore('kv').delete('cfg'); else tx.objectStore('kv').put(v,'cfg'); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); }); return true; }
+  catch(e){ return false; }
+}
+async function _aiIdbGet(){
+  try{ const db = await _aiIdb(); return await new Promise((res,rej)=>{ const r=db.transaction('kv').objectStore('kv').get('cfg'); r.onsuccess=()=>res(r.result||null); r.onerror=()=>rej(r.error); }); }
+  catch(e){ return null; }
+}
+async function _aiWaitUser(ms){
+  const t0 = Date.now();
+  while(Date.now()-t0 < ms){
+    try{ if(typeof fbAuth!=='undefined' && fbAuth.currentUser) return fbAuth.currentUser; }catch(e){}
+    await new Promise(r=>setTimeout(r,300));
+  }
+  return null;
+}
+async function aiCloudSet(c){
+  try{
+    const u = await _aiWaitUser(4000); if(!u) return false;
+    const val = c ? c : firebase.firestore.FieldValue.delete();
+    await fbDb.collection('users').doc(u.uid).set({ aiSlipCfg: val }, { merge:true });
+    return true;
+  }catch(e){ console.warn('AI cfg cloud save failed', e); return false; }
+}
+async function aiCloudGet(){
+  try{
+    const u = await _aiWaitUser(4000); if(!u) return null;
+    const d = await fbDb.collection('users').doc(u.uid).get();
+    return (d.exists && d.data().aiSlipCfg) || null;
+  }catch(e){ return null; }
+}
+async function aiPersistCfg(c){
+  let local = false;
+  try{ localStorage.setItem(AI_CFG_KEY, JSON.stringify(c)); local = localStorage.getItem(AI_CFG_KEY) === JSON.stringify(c); }catch(e){}
+  const [idb, cloud] = await Promise.all([_aiIdbSet(c), aiCloudSet(c)]);
+  try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); }catch(e){}
+  return { local, idb, cloud };
+}
+// If this browser lost the local copy, bring it back from IndexedDB or the cloud copy.
+async function aiRestoreIfMissing(){
+  if(localStorage.getItem(AI_CFG_KEY)) {
+    // keep the IndexedDB backup in sync
+    try{ _aiIdbSet(JSON.parse(localStorage.getItem(AI_CFG_KEY))); }catch(e){}
+    return false;
+  }
+  let c = await _aiIdbGet();
+  if(!c) c = await aiCloudGet();
+  if(!c) return false;
+  try{ localStorage.setItem(AI_CFG_KEY, JSON.stringify(c)); }catch(e){}
+  return true;
+}
+function aiRenderSavedStatus(){
+  const el = document.getElementById('aiSavedStatus'); if(!el) return;
+  const c = getAiCfg();
+  const has = !!(aiActiveKey(c) || c.receiverName || c.bankName);
+  el.textContent = has ? ('✅ ມີການຕັ້ງຄ່າທີ່ບັນທຶກໄວ້ແລ້ວ' + (c.enabled ? ' · AI ເປີດໃຊ້ງານ' : ' · AI ຍັງປິດຢູ່')) : 'ຍັງບໍ່ມີການຕັ້ງຄ່າທີ່ບັນທຶກໄວ້';
+  el.className = 'text-xs mt-3 ' + (has ? 'text-green-400' : 'text-mist-400');
+}
+function _aiFillInputs(){
   const c = getAiCfg();
   document.getElementById('aiProviderInput').value = c.provider;
   document.getElementById('aiKeyInput').value = c.apiKey || '';
@@ -2179,8 +2240,13 @@ function refreshAiSlipInput(){
   document.getElementById('aiBankInput').value = c.bankName || '';
   document.getElementById('aiMaxInput').value = c.maxAuto || '';
   document.getElementById('aiEnabledInput').checked = !!c.enabled;
+  aiRenderSavedStatus();
 }
-function saveAiSlipSettings(){
+function refreshAiSlipInput(){
+  _aiFillInputs();
+  aiRestoreIfMissing().then(restored=>{ if(restored){ _aiFillInputs(); toastInfo('ກູ້ຄືນການຕັ້ງຄ່າ AI ແລ້ວ'); } });
+}
+async function saveAiSlipSettings(){
   const c = {
     provider: document.getElementById('aiProviderInput').value,
     apiKey: (document.getElementById('aiKeyInput').value||'').trim(),
@@ -2192,16 +2258,20 @@ function saveAiSlipSettings(){
     enabled: document.getElementById('aiEnabledInput').checked,
   };
   if(c.enabled && (!aiActiveKey(c) || !c.receiverName || !c.bankName)) return toastErr('ກະລຸນາປ້ອນ API Key ຂອງ AI ທີ່ເລືອກ, ຊື່ບັນຊີ ແລະ ຊື່ທະນາຄານໃຫ້ຄົບ');
-  localStorage.setItem(AI_CFG_KEY, JSON.stringify(c));
+  const r = await aiPersistCfg(c);
   _aiTried.clear();
-  toastOk('ບັນທຶກສຳເລັດ');
+  aiRenderSavedStatus();
+  if(!r.local && !r.idb && !r.cloud) return toastErr('ບັນທຶກບໍ່ສຳເລັດ: ບຣາວເຊີນີ້ບໍ່ໃຫ້ເກັບຂໍ້ມູນ (ອາດເປັນໂໝດ Private). ກະລຸນາເປີດໃນ Safari/Chrome ປົກກະຕິ');
+  toastOk('ບັນທຶກສຳເລັດ' + (r.cloud ? ' (ມີສຳເນົາສຳຮອງໃນບັນຊີແອດມິນ)' : ' (ເກັບໃນບຣາວເຊີ)'));
 }
-function removeAiSlipKey(){
+async function removeAiSlipKey(){
   const c = getAiCfg(); c.apiKey = ''; c.geminiKey = ''; c.enabled = false;
-  localStorage.setItem(AI_CFG_KEY, JSON.stringify(c));
-  refreshAiSlipInput();
+  await aiPersistCfg(c);
+  _aiFillInputs();
   toastOk('ລຶບ API Key ແລ້ວ');
 }
+// On every page load: ask the browser to keep storage, restore a lost copy, keep backups in sync.
+setTimeout(()=>{ aiRestoreIfMissing().then(r=>{ if(r){ try{ _aiFillInputs(); }catch(e){} } }).catch(()=>{}); }, 3000);
 async function _aiCall(apiKey, content, maxTokens){
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method:'POST',
