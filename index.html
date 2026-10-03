@@ -182,7 +182,6 @@ h1.font-display, h2.font-display{ text-shadow:0 0 18px rgba(225,29,46,.45); }
           <button onclick="adminTab('products')" data-tab="products" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-box w-4"></i> ຈັດການສິນຄ້າ</button>
           <button onclick="adminTab('users')" data-tab="users" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-users w-4"></i> ຈັດການຜູ້ໃຊ້</button>
           <button onclick="adminTab('orders')" data-tab="orders" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-cart-shopping w-4"></i> ຈັດການອໍເດີ</button>
-          <button onclick="adminTab('payments')" data-tab="payments" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-money-check-dollar w-4"></i> ຢືນຢັນການຊຳລະ</button>
           <button onclick="adminTab('wallet')" data-tab="wallet" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-money-bill-transfer w-4"></i> ເຕີມ / ຫັກເງິນ (ດ້ວຍເບີ)</button>
           <button onclick="adminTab('codes')" data-tab="codes" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-ticket w-4"></i> ໂຄດເຕີມເງິນ</button>
           <button onclick="adminTab('qrsettings')" data-tab="qrsettings" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-qrcode w-4"></i> ຕັ້ງຄ່າ QR ຊຳລະເງິນ</button>
@@ -241,7 +240,6 @@ h1.font-display, h2.font-display{ text-shadow:0 0 18px rgba(225,29,46,.45); }
   </div>
 </div>
 
-<div id="adm-payments" class="admincontent hidden"><h2 class="font-display font-700 text-2xl text-mist-100 mb-5">ຢືນຢັນການຊຳລະເງິນ</h2><div id="admPaymentList" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4"></div></div>
 <div id="adm-wallet" class="admincontent hidden">
   <h2 class="font-display font-700 text-2xl text-mist-100 mb-1">ເຕີມ / ຫັກເງິນ ດ້ວຍເບີໂທ</h2>
   <p class="text-xs text-mist-400 mb-5">ໃສ່ເບີລູກຄ້າ ແລ້ວກົດຄົ້ນຫາ ຈະເຫັນຍອດເງິນເກົ່າ ກ່ອນເຕີມ ຫຼື ຫັກ (ສະເພາະແອັດມິນ)</p>
@@ -382,6 +380,11 @@ h1.font-display, h2.font-display{ text-shadow:0 0 18px rgba(225,29,46,.45); }
     <input id="wheelPrice" type="number" min="1" placeholder="ເຊັ່ນ 5000" class="mt-1.5 w-40 bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100">
     <p class="text-sm text-mist-400 mt-4 mb-2">ເລືອກສິນຄ້າທີ່ຢູ່ໃນວົງລໍ ແລະ ໃສ່ "ນ້ຳໜັກ" (ເລກຍິ່ງຫຼາຍ ໂອກາດຍິ່ງສູງ). ເປີເຊັນທີ່ຄຳນວນໄດ້ສະແດງຢູ່ຂ້າງແຖວ (ລູກຄ້າເຫັນກໍຕໍ່ເມື່ອຕິກ "ສະແດງ" ດ້ານເທິງ). ຕົວເລືອກທີ່ລູກຄ້າໄດ້ຮັບ = ຕົວເລືອກລາຄາຖືກສຸດທີ່ຍັງມີສະຕັອກ.</p>
     <div id="wheelItems" class="space-y-2"></div>
+    <div class="flex items-center justify-between gap-2 mt-6 mb-2">
+      <p class="text-sm text-mist-400">ຊ່ອງພິເສດ (ບໍ່ມີສິນຄ້າ ເຊັ່ນ ❌ ໂຊກດີຄັ້ງຕໍ່ໄປ) — ສະແດງໃນວົງລໍ ແຕ່ລູກຄ້າບໍ່ໄດ້ສິນຄ້າ</p>
+      <button type="button" onclick="addWheelCustom()" class="shrink-0 px-3 py-1.5 rounded-lg bg-ink-700 hover:bg-ink-600 text-mist-100 text-xs font-display"><i class="fa-solid fa-plus mr-1"></i>ເພີ່ມຊ່ອງ</button>
+    </div>
+    <div id="wheelCustom" class="space-y-2"></div>
     <button onclick="saveWheelSettings()" class="mt-5 px-5 py-2.5 rounded-lg bg-plasma-500 hover:bg-plasma-600 font-display font-600 text-sm">ບັນທຶກ</button>
   </div>
 </div>
@@ -966,16 +969,7 @@ const api = {
     return { token:'jwt.'+uid('atok'), admin };
   },
   async getProducts(){ return loadDB(DB_KEYS.products, []); },
-  async getProduct(id){ return loadDB(DB_KEYS.products, []).find(p=>p.id===id); },
-  async submitPayment({orderId, method, slipDataUrl}){
-    const orders = loadDB(DB_KEYS.orders, []);
-    const order = orders.find(o=>o.id===orderId);
-    if(!order) throw new Error('ບໍ່ພົບອໍເດີ');
-    order.paymentMethod = method; order.slip = slipDataUrl; order.status = 'pending_verification';
-    saveDB(DB_KEYS.orders, orders);
-    log('PAYMENT_SUBMIT', `Payment slip submitted for order ${orderId}`);
-    return order;
-  }
+  async getProduct(id){ return loadDB(DB_KEYS.products, []).find(p=>p.id===id); }
 };
 
 let SESSION = loadDB(DB_KEYS.session, null);
@@ -1311,26 +1305,83 @@ function removeAdminHeroBanner(){
   toastOk('ລຶບແບນເນີ Hero ແລ້ວ');
 }
 
+let _wheelImgs = {};   // productId -> custom wheel image (data URL), e.g. a ❌ for "ໂຊກດີຄັ້ງຕໍ່ໄປ"
+// small PNG (keeps transparency) so the image stays tiny inside the settings document
+async function _wheelIconFromFile(file){
+  const src = await _loadImgSource(file);
+  let dim = 160, out = null;
+  for(let i=0;i<5;i++){
+    let w = src.w, h = src.h;
+    if(w > dim || h > dim){ if(w >= h){ h = Math.round(h*dim/w); w = dim; } else { w = Math.round(w*dim/h); h = dim; } }
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    c.getContext('2d').drawImage(src.el, 0, 0, w, h);
+    out = c.toDataURL('image/png');
+    if(out.length*0.75 <= 40*1024) break;
+    dim = Math.round(dim*0.8);
+  }
+  return out;
+}
+function _wheelImgCell(pid){
+  const img = _wheelImgs[pid];
+  return img
+    ? `<img src="${img}" class="w-9 h-9 rounded object-cover border border-ink-600"><button type="button" onclick="wheelClearImg('${pid}')" title="ລຶບຮູບ" class="text-red-400 text-xs px-1">✕</button>`
+    : `<span class="w-9 h-9 rounded border border-dashed border-ink-500 flex items-center justify-center text-mist-400 text-base"><i class="fa-solid fa-image"></i></span>`;
+}
+function _wheelRefreshImg(pid){
+  const el = document.querySelector(`#wheelItems [data-pid="${pid}"] .wheel-imgcell, #wheelCustom [data-cid="${pid}"] .wheel-imgcell`); if(el) el.innerHTML = _wheelImgCell(pid);
+}
+async function wheelPickImg(pid, input){
+  const f = input.files && input.files[0]; input.value=''; if(!f) return;
+  try{ _wheelImgs[pid] = await _wheelIconFromFile(f); _wheelRefreshImg(pid); toastOk('ເລືອກຮູບແລ້ວ — ກົດ "ບັນທຶກ" ເພື່ອໃຊ້ງານ'); }
+  catch(e){ console.warn(e); toastErr('ໂຫຼດຮູບບໍ່ສຳເລັດ'); }
+}
+function wheelClearImg(pid){ delete _wheelImgs[pid]; _wheelRefreshImg(pid); }
+function _wheelCustomRow(c){
+  return `<div class="flex flex-wrap items-center gap-x-3 gap-y-2 p-2 rounded-lg bg-ink-900/60 border border-plasma-500/30" data-cid="${c.id}">
+      <input type="checkbox" class="wheel-on w-4 h-4" ${c.on!==false?'checked':''} onchange="updateWheelOdds()">
+      <input type="text" class="wheel-name flex-1 min-w-[120px] bg-ink-900 border border-ink-600 rounded-lg px-2 py-1 text-mist-100 text-sm" placeholder="ຊື່ຊ່ອງ ເຊັ່ນ ໂຊກດີຄັ້ງຕໍ່ໄປ" value="${escapeHtml(c.name||'')}">
+      <span class="wheel-imgcell flex items-center gap-1 shrink-0">${_wheelImgCell(c.id)}</span>
+      <label class="shrink-0 cursor-pointer px-2 py-1 rounded-lg bg-ink-700 hover:bg-ink-600 text-mist-100 text-xs font-display" title="ອັບໂຫຼດຮູບ"><i class="fa-solid fa-upload"></i><input type="file" accept="image/*" class="hidden" onchange="wheelPickImg('${c.id}', this)"></label>
+      <input type="number" min="0" step="any" value="${c.weight!=null?c.weight:1}" class="wheel-w w-20 bg-ink-900 border border-ink-600 rounded-lg px-2 py-1 text-mist-100 text-sm" oninput="updateWheelOdds()">
+      <span class="wheel-pct w-14 text-right text-xs font-mono text-ion-400"></span>
+      <button type="button" onclick="removeWheelCustom('${c.id}')" class="shrink-0 w-8 h-8 rounded-lg bg-red-500/15 text-red-400 hover:bg-red-500/30" title="ລຶບຊ່ອງນີ້"><i class="fa-solid fa-trash"></i></button>
+    </div>`;
+}
+function addWheelCustom(){
+  const c = { id: uid('wc'), name:'', weight:1, on:true };
+  document.getElementById('wheelCustom').insertAdjacentHTML('beforeend', _wheelCustomRow(c));
+  updateWheelOdds();
+}
+function removeWheelCustom(cid){
+  delete _wheelImgs[cid];
+  const el = document.querySelector(`#wheelCustom [data-cid="${cid}"]`); if(el) el.remove();
+  updateWheelOdds();
+}
 function renderAdminWheel(){
   const w = (loadDB(DB_KEYS.settings,{}).wheel)||{};
   const items = w.items||{};
+  _wheelImgs = {}; Object.keys(items).forEach(k=>{ if(items[k] && items[k].img) _wheelImgs[k] = items[k].img; });
+  (w.custom||[]).forEach(c=>{ if(c && c.img) _wheelImgs[c.id] = c.img; });
   document.getElementById('wheelEnabled').checked = !!w.enabled;
   document.getElementById('wheelShowOdds').checked = !!w.showOdds;
   document.getElementById('wheelPrice').value = w.price||'';
   const products = loadDB(DB_KEYS.products,[]).filter(p=>p.status!=='hidden');
   document.getElementById('wheelItems').innerHTML = products.map(p=>{
     const it = items[p.id]||{}; const on = it.on!==false; const wt = it.weight!=null?it.weight:1;
-    return `<div class="flex items-center gap-3 p-2 rounded-lg bg-ink-900/60 border border-ink-700" data-pid="${p.id}">
+    return `<div class="flex flex-wrap items-center gap-x-3 gap-y-2 p-2 rounded-lg bg-ink-900/60 border border-ink-700" data-pid="${p.id}">
       <input type="checkbox" class="wheel-on w-4 h-4" ${on?'checked':''} onchange="updateWheelOdds()">
       <span class="flex-1 min-w-0 truncate text-sm text-mist-200">${escapeHtml(p.name)}</span>
+      <span class="wheel-imgcell flex items-center gap-1 shrink-0">${_wheelImgCell(p.id)}</span>
+      <label class="shrink-0 cursor-pointer px-2 py-1 rounded-lg bg-ink-700 hover:bg-ink-600 text-mist-100 text-xs font-display" title="ອັບໂຫຼດຮູບໃນວົງລໍ (ເຊັ່ນ ❌)"><i class="fa-solid fa-upload"></i><input type="file" accept="image/*" class="hidden" onchange="wheelPickImg('${p.id}', this)"></label>
       <input type="number" min="0" step="any" value="${wt}" class="wheel-w w-20 bg-ink-900 border border-ink-600 rounded-lg px-2 py-1 text-mist-100 text-sm" oninput="updateWheelOdds()">
       <span class="wheel-pct w-14 text-right text-xs font-mono text-ion-400"></span>
     </div>`;
   }).join('') || '<p class="text-mist-400 text-sm">ຍັງບໍ່ມີສິນຄ້າ</p>';
+  document.getElementById('wheelCustom').innerHTML = (w.custom||[]).map(_wheelCustomRow).join('');
   updateWheelOdds();
 }
 function updateWheelOdds(){
-  const rows = Array.from(document.querySelectorAll('#wheelItems [data-pid]'));
+  const rows = Array.from(document.querySelectorAll('#wheelItems [data-pid], #wheelCustom [data-cid]'));
   const ws = rows.map(r=> r.querySelector('.wheel-on').checked ? Math.max(0, parseFloat(r.querySelector('.wheel-w').value)||0) : 0);
   const tot = ws.reduce((a,b)=>a+b,0);
   rows.forEach((r,i)=>{ r.querySelector('.wheel-pct').textContent = tot>0 && ws[i]>0 ? (ws[i]/tot*100).toFixed(1)+'%' : '-'; });
@@ -1342,9 +1393,16 @@ function saveWheelSettings(){
   const items = {};
   document.querySelectorAll('#wheelItems [data-pid]').forEach(r=>{
     items[r.dataset.pid] = { on: r.querySelector('.wheel-on').checked, weight: Math.max(0, parseFloat(r.querySelector('.wheel-w').value)||0) };
+    if(_wheelImgs[r.dataset.pid]) items[r.dataset.pid].img = _wheelImgs[r.dataset.pid];
+  });
+  const custom = [];
+  document.querySelectorAll('#wheelCustom [data-cid]').forEach(r=>{
+    const id = r.dataset.cid, name = r.querySelector('.wheel-name').value.trim(), img = _wheelImgs[id] || '';
+    if(!name && !img) return;   // empty row: ignore
+    custom.push({ id, name, img, on: r.querySelector('.wheel-on').checked, weight: Math.max(0, parseFloat(r.querySelector('.wheel-w').value)||0) });
   });
   const settings = loadDB(DB_KEYS.settings, {});
-  settings.wheel = { enabled, price, items, showOdds: document.getElementById('wheelShowOdds').checked };
+  settings.wheel = { enabled, price, items, custom, showOdds: document.getElementById('wheelShowOdds').checked };
   saveDB(DB_KEYS.settings, settings);
   log('WHEEL_SETTINGS', `enabled=${enabled} price=${price}`);
   toastOk('ບັນທຶກວົງລໍສຳເລັດ');
@@ -1423,7 +1481,6 @@ async function adminTab(tab){
     if(tab==='users') renderAdminUsers();
     if(tab==='qrsettings') renderQrAmountAdmin();
     if(tab==='orders') renderAdminOrders();
-    if(tab==='payments') renderAdminPayments();
     if(tab==='codes') renderAdminCodes();
     if(tab==='qrsettings') refreshAdminQrPreview();
     if(tab==='bgsettings') refreshAdminBgPreview();
@@ -1490,7 +1547,8 @@ function renderAdminProducts(){
 let _pfImages = [];
 let _pfSnapshot = {};
 function optAllPool(p){ return !!(p.options&&p.options.length&&p.options.every(o=>o.pool)); }
-function syncProductStock(p){ if(!optAllPool(p)) return; const t=p.options.reduce((n,o)=>n+((o.codes||[]).length),0); p.stock=t; if(t<=0 && p.status==='available') p.status='sold'; }
+function poolHasCodes(p){ return !!(p && p.options && p.options.some(o=>o.pool && (o.codes||[]).length>0)); }
+function syncProductStock(p){ if(!optAllPool(p)){ if(p.status==='sold' && poolHasCodes(p)) p.status='available'; return; } const t=p.options.reduce((n,o)=>n+((o.codes||[]).length),0); p.stock=t; if(t<=0 && p.status==='available') p.status='sold'; }
 function updateOptStock(row){
   const n = Array.from(row.querySelectorAll('.opt-code-item')).filter(i=>i.value.trim()).length;
   const el = row.querySelector('.opt-stock-count'); if(el) el.textContent = `ສະຕັອກ: ${n}`;
@@ -1931,67 +1989,11 @@ function renderAdminOrders(){
       <td class="p-3 text-mist-300">${escapeHtml(displayName)}</td>
       <td class="p-3 font-mono text-ion-400">₭${fmtK(o.amount)}</td>
       <td class="p-3 text-xs font-display ${st[1]}">${st[0]}</td>
-      <td class="p-3">${o.status==='pending_verification'?`<button onclick="adminTab('payments')" class="text-xs text-plasma-400 hover:underline">ໄປໜ້າຢືນຢັນ</button>`:'-'}</td>
+      <td class="p-3">-</td>
     </tr>`;
   }).join('') || `<tr><td colspan="6" class="text-center py-8 text-mist-400">ຍັງບໍ່ມີອໍເດີ</td></tr>`;
 }
 
-function renderAdminPayments(){
-  const orders = loadDB(DB_KEYS.orders,[]).filter(o=>o.status==='pending_verification');
-  const users = loadDB(DB_KEYS.users,[]); const products = loadDB(DB_KEYS.products,[]);
-  document.getElementById('admPaymentList').innerHTML = orders.map(o=>{
-    const u = users.find(x=>x.id===o.userId)||{username:'-'};
-    const p = products.find(x=>x.id===o.productId)||{name:'-'};
-    const displayName = o.optionLabel ? `${p.name} (${o.optionLabel})` : p.name;
-    return `<div class="bg-ink-800/60 border border-ink-700 rounded-xl p-4">
-      ${o.slip ? `<img src="${o.slip}" class="w-full h-40 object-cover rounded-lg border border-ink-700 mb-3 cursor-zoom-in" onclick="openImgLightbox('${o.slip}')">` : `<div class="w-full h-24 flex items-center justify-center rounded-lg border border-ink-700 mb-3 text-ion-400 text-sm font-display"><i class="fa-solid fa-wallet mr-2"></i>ຈ່າຍດ້ວຍກະເປົາເງິນ (ຫັກເງິນແລ້ວ)</div>`}
-      <p class="text-sm text-mist-200 font-display">${escapeHtml(displayName)}</p>
-      <p class="text-xs text-mist-400">${escapeHtml(u.username)} · ₭${fmtK(o.amount)} · ${o.paymentMethod==='qr'?'QR':(o.paymentMethod==='balance'?'Wallet':'ໂອນທະນາຄານ')}</p>
-      ${o.slip ? `<div class="flex gap-2 mt-3"><button onclick="openImgLightbox('${o.slip}')" class="flex-1 py-2 rounded-lg bg-ink-700 hover:bg-ink-600 text-mist-200 text-xs font-display"><i class="fa-solid fa-expand mr-1"></i>ເບິ່ງເຕັມ</button></div>` : ''}
-      <div class="flex gap-2 mt-2">
-        <button onclick="verifyOrder('${o.id}', true)" class="flex-1 py-2 rounded-lg bg-green-500/20 text-green-400 text-xs font-display hover:bg-green-500/30">ອະນຸມັດ</button>
-        <button onclick="verifyOrder('${o.id}', false)" class="flex-1 py-2 rounded-lg bg-red-500/20 text-red-400 text-xs font-display hover:bg-red-500/30">ປະຕິເສດ</button>
-      </div>
-    </div>`;
-  }).join('') || `<div class="col-span-full text-center py-10 text-mist-400"><i class="fa-solid fa-check-double text-3xl mb-2"></i><p>ບໍ່ມີການຊຳລະທີ່ລໍຖ້າກວດສອບ</p></div>`;
-}
-async function verifyOrder(orderId, approve){
-  try{ await pullAdminDataFromFirestore(true); }catch(e){}
-  const orders = loadDB(DB_KEYS.orders,[]);
-  const order = orders.find(o=>o.id===orderId); if(!order) return;
-  if(order.status!=='pending_verification'){ renderAdminPayments(); return toastErr('ອໍເດີນີ້ຖືກດຳເນີນການແລ້ວ'); }
-  order.status = approve? 'completed':'rejected';
-  order.verifiedAt = nowISO();
-  if(approve){
-    const products = loadDB(DB_KEYS.products,[]);
-    const p = products.find(x=>x.id===order.productId);
-    if(p){
-      const _opt = (order.optionLabel && p.options) ? p.options.find(o=>o.label===order.optionLabel) : null;
-      let _poolCode = null;
-      if(_opt && _opt.pool){ _poolCode = (_opt.codes||[]).shift() || null; }
-      if(optAllPool(p)){ syncProductStock(p); }
-      else if(p.stock !== undefined && p.stock !== null && p.stock !== ''){
-        const remaining = Math.max(0, (parseInt(p.stock)||0) - 1);
-        p.stock = remaining;
-        if(remaining <= 0) p.status='sold';
-      } else { p.status='sold'; }
-      saveDB(DB_KEYS.products, products);
-      order.deliveryCode = _poolCode || (_opt && !_opt.pool && _opt.deliveryCode) || (!(_opt&&_opt.pool) && p.deliveryCode) || `${p.name} — ຕິດຕໍ່ແອດມິນເພື່ອຮັບຂໍ້ມູນສິນຄ້າ`;
-      order.deliveryVideoUrl = p.videoUrl || null;
-    }
-  }
-  saveDB(DB_KEYS.orders, orders);
-  if(approve){ notifyUser(order.userId, 'ການຊຳລະເງິນຖືກຢືນຢັນ', 'ອໍເດີຂອງທ່ານສຳເລັດແລ້ວ! ເບິ່ງລະຫັດໄອດີໄດ້ທີ່ ປະຫວັດການສັ່ງຊື້ ຫຼື ເບິ່ງລະຫັດທີຊື້ມາ.'); }
-  else if(order.paymentMethod==='balance'){
-    // paid from wallet at purchase time -> give the money back on reject
-    try{ await adjustUserBalance(order.userId, order.amount); }catch(e){ console.warn(e); toastErr('ຄືນເງິນບໍ່ສຳເລັດ'); }
-    notifyUser(order.userId, 'ອໍເດີຖືກປະຕິເສດ', `ຄືນເງິນ ₭${fmtK(order.amount)} ເຂົ້າກະເປົາຂອງທ່ານແລ້ວ.`);
-  }
-  else { notifyUser(order.userId, 'ການຊຳລະເງິນຖືກປະຕິເສດ', 'ກະລຸນາກວດສອບສະລິບການໂອນເງິນ ຫຼື ຕິດຕໍ່ແອດມິນ.'); }
-  log('PAYMENT_'+(approve?'APPROVE':'REJECT'), `Order ${orderId}`);
-  renderAdminPayments(); renderAdminOrders(); renderAdminOverview();
-  toastOk(approve? 'ອະນຸມັດການຊຳລະເງິນສຳເລັດ' : 'ປະຕິເສດການຊຳລະເງິນແລ້ວ');
-}
 
 function refreshFbNotifyInput(){
   const settings = loadDB(DB_KEYS.settings, {fbApiKey:'', adminPanelUrl:''});
