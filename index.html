@@ -192,6 +192,7 @@ h1.font-display, h2.font-display{ text-shadow:0 0 18px rgba(225,29,46,.45); }
           <button onclick="adminTab('wheel')" data-tab="wheel" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-dharmachakra w-4"></i> ວົງລໍສິນຄ້າ</button>
           <button onclick="adminTab('fbnotify')" data-tab="fbnotify" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-brands fa-facebook-messenger w-4"></i> ແຈ້ງເຕືອນເຟສບຸກ</button>
           <button onclick="adminTab('notifications')" data-tab="notifications" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-bell w-4"></i> ຈັດການແຈ້ງເຕືອນ</button>
+          <button onclick="adminTab('agents')" data-tab="agents" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-handshake w-4"></i> ຕົວແທນຂາຍ</button>
         </nav>
       </aside>
       <div>
@@ -206,6 +207,15 @@ h1.font-display, h2.font-display{ text-shadow:0 0 18px rgba(225,29,46,.45); }
           <div class="bg-ink-800/60 border border-ink-700 rounded-xl p-5"><p class="font-display text-mist-100 font-600 mb-4">ອໍເດີຫຼ້າສຸດ</p><div id="admRecentOrders" class="space-y-2 text-sm"></div></div>
         </div>
 
+
+<div id="adm-agents" class="admincontent hidden">
+  <div class="flex items-center justify-between mb-5">
+    <h2 class="font-display font-700 text-2xl text-mist-100">ຕົວແທນຂາຍ</h2>
+    <button onclick="addAgent()" class="px-4 py-2.5 rounded-lg bg-plasma-500 hover:bg-plasma-600 font-display font-600 text-sm"><i class="fa-solid fa-plus mr-1"></i> ເພີ່ມຕົວແທນ</button>
+  </div>
+  <p class="text-xs text-mist-400 mb-4">ລາຄາທີ່ປັບໃນໜ້າຕົວແທນ ມີຜົນສະເພາະເວັບຂອງຕົວແທນນັ້ນ. ລາຄາຫຼັກຂອງແອດມິນ ແລະ ລູກຄ້າທົ່ວໄປບໍ່ປ່ຽນ.</p>
+  <div id="agentList" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-3"></div>
+</div>
 
 <div id="adm-products" class="admincontent hidden">
   <div class="flex items-center justify-between mb-5">
@@ -524,7 +534,7 @@ h1.font-display, h2.font-display{ text-shadow:0 0 18px rgba(225,29,46,.45); }
 
 
 <script>
-const DB_KEYS = { users:'vp_users', admins:'vp_admins', products:'vp_products', orders:'vp_orders', logs:'vp_logs', session:'vp_session', theme:'vp_theme', settings:'vp_settings', topups:'vp_topups', activeTopups:'vp_active_topups' };
+const DB_KEYS = { users:'vp_users', admins:'vp_admins', products:'vp_products', orders:'vp_orders', logs:'vp_logs', session:'vp_session', theme:'vp_theme', settings:'vp_settings', topups:'vp_topups', activeTopups:'vp_active_topups', agents:'vp_agents' };
 // This file is the private admin console — it skips the login screen and
 // signs straight in as the admin account below. If the admin password is
 // ever changed from inside the panel (Settings → Reset Password), update
@@ -696,7 +706,7 @@ function refreshCloudSyncBanner(){
 // doc per key in a single collection, so every device/browser sees the same
 // products, branding, marquee text, orders, etc. that the admin has set.
 const CLOUD_COLLECTION = 'shopData';
-const ADMIN_SYNC_KEYS = ['admins','products','orders','logs','topups','settings'];
+const ADMIN_SYNC_KEYS = ['admins','products','orders','logs','topups','settings','agents'];
 // Tracks Firestore writes that are still in flight. saveDB() fires these
 // without waiting (so the UI stays snappy), but that creates a race: if the
 // admin saves something and then quickly logs out/in or switches tabs
@@ -1489,6 +1499,7 @@ async function adminTab(tab){
     if(tab==='marqueesettings') refreshAdminMarqueeInput();
     if(tab==='fbnotify') refreshFbNotifyInput();
     if(tab==='wheel') renderAdminWheel();
+    if(tab==='agents') renderAgents();
     if(tab==='overview') renderAdminOverview();
   };
   paint();   // PERF: show instantly from local cache...
@@ -2242,5 +2253,235 @@ function deleteRedeemCode(code){
 })();
 </script>
 
+
+<div id="agentModal" class="hidden fixed inset-0 z-[90] bg-black/80 overflow-y-auto p-3 sm:p-6">
+  <div class="max-w-4xl mx-auto bg-ink-800 border border-ink-700 rounded-xl p-4 sm:p-6">
+    <div class="flex items-start justify-between mb-4">
+      <div><h3 id="agModalTitle" class="font-display font-700 text-xl text-mist-100"></h3><p id="agModalSub" class="text-xs text-mist-400"></p></div>
+      <button onclick="closeAgentModal()" class="text-mist-400 hover:text-mist-100"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <div class="flex gap-2 mb-4 font-display text-sm">
+      <button data-ag="customers" onclick="agentSubTab('customers')" class="agtab px-3 py-1.5 rounded-lg bg-ink-700 text-mist-100"><i class="fa-solid fa-users mr-1"></i> ລູກຄ້າ / ເຕີມເງິນ</button>
+      <button data-ag="prices" onclick="agentSubTab('prices')" class="agtab px-3 py-1.5 rounded-lg text-mist-200 hover:bg-ink-700"><i class="fa-solid fa-tags mr-1"></i> ປັບລາຄາ</button>
+      <button data-ag="gallery" onclick="agentSubTab('gallery')" class="agtab px-3 py-1.5 rounded-lg text-mist-200 hover:bg-ink-700"><i class="fa-solid fa-image mr-1"></i> ຮູບແຄັບຈໍ</button>
+      <button data-ag="theme" onclick="agentSubTab('theme')" class="agtab px-3 py-1.5 rounded-lg text-mist-200 hover:bg-ink-700"><i class="fa-solid fa-palette mr-1"></i> ແບນເນີ / ສີ</button>
+    </div>
+    <div id="agBody"></div>
+  </div>
+</div>
+
+<script>
+// ================= ຕົວແທນຂາຍ (Agents) =================
+// agent = { id, userId, name, active, prices:{ [productId]:{ base:number|null, opts:{ [label]:number } } }, gallery:[{id,img,note,at}], createdAt }
+// ລາຄາຕົວແທນເກັບແຍກໃນ vp_agents ເທົ່ານັ້ນ — ບໍ່ແຕະ vp_products (ລາຄາແອດມິນ/ລູກຄ້າທົ່ວໄປ).
+const _ag = { id:null, tab:'customers' };
+const getAgents = ()=> loadDB(DB_KEYS.agents, []);
+const saveAgents = a => saveDB(DB_KEYS.agents, a);
+const getAgent = id => getAgents().find(a=>a.id===id);
+// ໃຫ້ເວັບລູກຄ້າເອີ້ນໃຊ້: ລາຄາທີ່ຕ້ອງສະແດງຕາມຕົວແທນ (ບໍ່ມີ override = ລາຄາຫຼັກ)
+function agentPrice(agent, product, optLabel){
+  const o = agent && agent.prices && agent.prices[product.id];
+  if(o){
+    if(optLabel!=null && o.opts && o.opts[optLabel]!=null) return o.opts[optLabel];
+    if(optLabel==null && o.base!=null) return o.base;
+  }
+  if(optLabel!=null){ const op=(product.options||[]).find(x=>x.label===optLabel); if(op) return op.price; }
+  return product.price;
+}
+function renderAgents(){
+  const users = loadDB(DB_KEYS.users, []);
+  const el = document.getElementById('agentList');
+  el.innerHTML = getAgents().map(a=>{
+    const u = users.find(x=>x.id===a.userId)||{};
+    const cnt = users.filter(x=>x.agentId===a.id).length;
+    return `<div class="bg-ink-800/60 border border-ink-700 rounded-xl p-4">
+      <div class="flex items-center justify-between"><p class="font-display font-700 text-mist-100">${escapeHtml(a.name)}</p>
+        <span class="text-xs px-2 py-1 rounded ${a.active?'bg-green-500/20 text-green-400':'bg-red-500/20 text-red-400'}">${a.active?'ເປີດ':'ປິດ'}</span></div>
+      <p class="text-xs text-mist-400 mt-1">ບັນຊີ: ${escapeHtml(u.username||'-')} · ລູກຄ້າ ${cnt} ຄົນ</p>
+      <div class="mt-3 text-xs flex gap-3">
+        <button onclick="openAgentModal('${a.id}')" class="text-ion-400 hover:underline">ເປີດໜ້າຕົວແທນ</button>
+        <button onclick="copyAgentLink('${a.id}')" class="text-green-400 hover:underline">ຄັດລອກລິ້ງ</button>
+        <button onclick="toggleAgent('${a.id}')" class="text-plasma-400 hover:underline">${a.active?'ປິດ':'ເປີດ'}</button>
+        <button onclick="deleteAgent('${a.id}')" class="text-red-400 hover:underline">ລຶບ</button></div></div>`;
+  }).join('') || `<p class="text-mist-400 text-sm col-span-full text-center py-8">ຍັງບໍ່ມີຕົວແທນ</p>`;
+}
+async function addAgent(){
+  const users = loadDB(DB_KEYS.users, []);
+  const used = new Set(getAgents().map(a=>a.userId));
+  const opts = {}; users.filter(u=>!used.has(u.id)).forEach(u=>{ opts[u.id] = u.username+(u.phone?` (${u.phone})`:''); });
+  if(!Object.keys(opts).length) return toastErr('ບໍ່ມີຜູ້ໃຊ້ທີ່ຈະຕັ້ງເປັນຕົວແທນ');
+  const r = await Swal.fire({ title:'ເພີ່ມຕົວແທນ', input:'select', inputOptions:opts, inputPlaceholder:'ເລືອກບັນຊີຜູ້ໃຊ້',
+    showCancelButton:true, confirmButtonText:'ເພີ່ມ', cancelButtonText:'ຍົກເລີກ',
+    background:'#0C0607', color:'#F3ECEC', confirmButtonColor:'#22C55E', cancelButtonColor:'#4A2830' });
+  if(!r.isConfirmed || !r.value) return;
+  const u = users.find(x=>x.id===r.value);
+  const list = getAgents();
+  list.push({ id:uid('agt'), userId:u.id, name:u.username, active:true, prices:{}, gallery:[], createdAt:nowISO() });
+  saveAgents(list); log('AGENT_ADD', 'Added agent '+u.username); renderAgents(); toastOk('ເພີ່ມຕົວແທນສຳເລັດ');
+}
+function copyAgentLink(id){
+  const t='agent.html?agent='+id;
+  try{ navigator.clipboard.writeText(t).then(()=>toastOk('ຄັດລອກແລ້ວ — ໃສ່ໂດເມນເວັບໜ້າໜ້າ: '+t)).catch(()=>toastInfo(t)); }catch(e){ toastInfo(t); }
+}
+function toggleAgent(id){ const l=getAgents(); const a=l.find(x=>x.id===id); if(!a) return; a.active=!a.active; saveAgents(l); renderAgents(); }
+function deleteAgent(id){
+  Swal.fire({ title:'ລຶບຕົວແທນນີ້?', text:'ລາຄາ ແລະ ຮູບຂອງຕົວແທນຈະຖືກລຶບ (ລູກຄ້າບໍ່ຖືກລຶບ)', icon:'warning', showCancelButton:true,
+    confirmButtonText:'ລຶບ', cancelButtonText:'ຍົກເລີກ', background:'#0C0607', color:'#F3ECEC', confirmButtonColor:'#EF4444', cancelButtonColor:'#4A2830'
+  }).then(r=>{ if(!r.isConfirmed) return;
+    saveAgents(getAgents().filter(a=>a.id!==id));
+    const us = loadDB(DB_KEYS.users, []); us.forEach(u=>{ if(u.agentId===id) delete u.agentId; }); saveDB(DB_KEYS.users, us);
+    renderAgents(); toastOk('ລຶບແລ້ວ'); });
+}
+function openAgentModal(id){ _ag.id=id; document.getElementById('agentModal').classList.remove('hidden'); agentSubTab('customers'); }
+function closeAgentModal(){ document.getElementById('agentModal').classList.add('hidden'); renderAgents(); }
+function agentSubTab(t){
+  _ag.tab=t;
+  document.querySelectorAll('.agtab').forEach(b=>{ const on=b.dataset.ag===t; b.classList.toggle('bg-ink-700',on); b.classList.toggle('text-mist-100',on); b.classList.toggle('text-mist-200',!on); });
+  const a = getAgent(_ag.id); if(!a) return closeAgentModal();
+  document.getElementById('agModalTitle').textContent = 'ໜ້າຕົວແທນ: '+a.name;
+  document.getElementById('agModalSub').textContent = 'ການປ່ຽນແປງຢູ່ນີ້ມີຜົນສະເພາະຕົວແທນນີ້';
+  ({customers:paintAgentCustomers, prices:paintAgentPrices, gallery:paintAgentGallery, theme:paintAgentTheme})[t](a);
+}
+// ---- ລູກຄ້າ + ເຕີມເງິນ (ແບບດຽວກັບແອດມິນ) ----
+function paintAgentCustomers(a){
+  const users = loadDB(DB_KEYS.users, []).filter(u=>u.agentId===a.id);
+  document.getElementById('agBody').innerHTML = `
+    <div class="flex justify-end mb-3"><button onclick="agentAddCustomer()" class="px-3 py-2 rounded-lg bg-plasma-500 hover:bg-plasma-600 text-sm font-display font-600"><i class="fa-solid fa-user-plus mr-1"></i> ເພີ່ມລູກຄ້າເຂົ້າຕົວແທນ</button></div>
+    <div class="bg-ink-900/60 border border-ink-700 rounded-xl overflow-x-auto"><table class="w-full text-sm">
+      <thead><tr class="text-left text-mist-400 text-xs border-b border-ink-700"><th class="p-3">ຊື່</th><th class="p-3">ເບີໂທ</th><th class="p-3">ຍອດເງິນ</th><th class="p-3"></th></tr></thead>
+      <tbody>${users.map(u=>`<tr class="border-b border-ink-800">
+        <td class="p-3 text-mist-200">${escapeHtml(u.username)}</td><td class="p-3 text-mist-400">${escapeHtml(u.phone||'-')}</td>
+        <td class="p-3 text-ion-400 font-mono">₭ ${fmtK(u.balance||0)}</td>
+        <td class="p-3 whitespace-nowrap"><button onclick="agentTopup('${u.id}')" class="text-xs text-green-400 hover:underline mr-3">ເຕີມເງິນ</button>
+          <button onclick="agentRemoveCustomer('${u.id}')" class="text-xs text-red-400 hover:underline">ເອົາອອກ</button></td></tr>`).join('')
+        || `<tr><td colspan="4" class="text-center py-8 text-mist-400">ຍັງບໍ່ມີລູກຄ້າ</td></tr>`}</tbody></table></div>`;
+}
+async function agentAddCustomer(){
+  const r = await Swal.fire({ title:'ເພີ່ມລູກຄ້າ', input:'text', inputLabel:'ຊື່ຜູ້ໃຊ້ ຫຼື ເບີໂທ', showCancelButton:true, confirmButtonText:'ເພີ່ມ', cancelButtonText:'ຍົກເລີກ',
+    background:'#0C0607', color:'#F3ECEC', confirmButtonColor:'#22C55E', cancelButtonColor:'#4A2830' });
+  if(!r.isConfirmed || !r.value) return;
+  const q = r.value.trim().toLowerCase(), pk = _phoneKey(q);
+  const us = loadDB(DB_KEYS.users, []);
+  const u = us.find(x=>String(x.username).toLowerCase()===q || (pk.length>=8 && _phoneKey(x.phone)===pk));
+  if(!u) return toastErr('ບໍ່ພົບຜູ້ໃຊ້ນີ້');
+  if(getAgents().some(g=>g.userId===u.id)) return toastErr('ບັນຊີນີ້ເປັນຕົວແທນ');
+  u.agentId = _ag.id; saveDB(DB_KEYS.users, us); toastOk('ເພີ່ມລູກຄ້າແລ້ວ'); paintAgentCustomers(getAgent(_ag.id));
+}
+function agentRemoveCustomer(uid_){
+  const us = loadDB(DB_KEYS.users, []); const u = us.find(x=>x.id===uid_); if(!u) return;
+  delete u.agentId; saveDB(DB_KEYS.users, us); paintAgentCustomers(getAgent(_ag.id));
+}
+async function agentTopup(userId){
+  const u = loadDB(DB_KEYS.users, []).find(x=>x.id===userId); if(!u) return;
+  const r = await Swal.fire({ title:`ເຕີມເງິນໃຫ້ ${escapeHtml(u.username)}`,
+    html:`<p class="text-xs text-mist-400 mb-2">ຍອດປັດຈຸບັນ: <b class="text-ion-400">₭ ${fmtK(u.balance||0)}</b></p>`,
+    input:'number', inputLabel:'ຈຳນວນເງິນທີ່ຈະເຕີມ (₭)', showCancelButton:true, confirmButtonText:'ເຕີມເງິນ', cancelButtonText:'ຍົກເລີກ',
+    background:'#0C0607', color:'#F3ECEC', confirmButtonColor:'#22C55E', cancelButtonColor:'#4A2830',
+    inputValidator:v=>(!v||parseInt(v)<=0)?'ກະລຸນາປ້ອນຈຳນວນເງິນທີ່ຖືກຕ້ອງ':undefined });
+  if(!r.isConfirmed) return;
+  const amount = Math.max(0, parseInt(r.value)||0);
+  try{ await adjustUserBalance(userId, amount); }catch(e){ console.warn(e); return toastErr(balanceErrMsg(e)); }
+  const tp = loadDB(DB_KEYS.topups, []);
+  tp.push({ id:uid('top'), userId, amount, slip:null, status:'completed', source:'agent', agentId:_ag.id, createdAt:nowISO(), verifiedAt:nowISO() });
+  saveDB(DB_KEYS.topups, tp);
+  notifyUser(userId, 'ເຕີມເງິນສຳເລັດ', `ໄດ້ຮັບເງິນ ₭${fmtK(amount)} ເຂົ້າກະເປົາຂອງທ່ານ.`);
+  log('AGENT_TOPUP', `Agent ${getAgent(_ag.id).name} credited ₭${amount} to ${u.username}`);
+  toastOk(`ເຕີມເງິນ ₭${fmtK(amount)} ສຳເລັດ`); paintAgentCustomers(getAgent(_ag.id));
+}
+// ---- ປັບລາຄາສະເພາະຕົວແທນ ----
+function paintAgentPrices(a){
+  const products = loadDB(DB_KEYS.products, []);
+  const inp = (pid, opt, val)=>`<input type="number" min="0" data-pid="${pid}" ${opt==null?'':`data-opt="${escapeHtml(opt)}"`} value="${val==null?'':val}" placeholder="ລາຄາຫຼັກ" class="agprice w-32 px-2 py-1 rounded bg-ink-900 border border-ink-700 text-mist-100 text-sm font-mono">`;
+  document.getElementById('agBody').innerHTML = `
+    <p class="text-xs text-mist-400 mb-3">ປ່ອຍວ່າງ = ໃຊ້ລາຄາຫຼັກ. ລາຄາທີ່ໃສ່ຈະສະແດງສະເພາະເວັບຕົວແທນ.</p>
+    <div class="space-y-2 max-h-[60vh] overflow-y-auto">${products.map(p=>{
+      const o = (a.prices||{})[p.id]||{};
+      const rows = (p.options&&p.options.length)
+        ? p.options.map(op=>`<div class="flex items-center justify-between gap-2 text-sm"><span class="text-mist-300 truncate">${escapeHtml(op.label)} <span class="text-mist-400 font-mono">(₭ ${fmtK(op.price)})</span></span>${inp(p.id, op.label, (o.opts||{})[op.label])}</div>`).join('')
+        : `<div class="flex items-center justify-between gap-2 text-sm"><span class="text-mist-400 font-mono">ລາຄາຫຼັກ ₭ ${fmtK(p.price)}</span>${inp(p.id, null, o.base)}</div>`;
+      return `<div class="bg-ink-900 border border-ink-700 rounded-lg p-3"><p class="font-display text-mist-100 mb-2">${escapeHtml(p.name)}</p><div class="space-y-1.5">${rows}</div></div>`;
+    }).join('') || '<p class="text-mist-400 text-center py-6">ຍັງບໍ່ມີສິນຄ້າ</p>'}</div>
+    <div class="flex justify-end gap-2 mt-4"><button onclick="resetAgentPrices()" class="px-4 py-2 rounded-lg bg-ink-700 hover:bg-ink-600 text-sm font-display">ລ້າງລາຄາທັງໝົດ</button>
+      <button onclick="saveAgentPrices()" class="px-4 py-2 rounded-lg bg-plasma-500 hover:bg-plasma-600 text-sm font-display font-600">ບັນທຶກລາຄາ</button></div>`;
+}
+function saveAgentPrices(){
+  const l = getAgents(); const a = l.find(x=>x.id===_ag.id); if(!a) return;
+  const prices = {};
+  document.querySelectorAll('#agBody .agprice').forEach(i=>{
+    if(i.value==='') return; const v = Math.max(0, parseFloat(i.value)||0), pid=i.dataset.pid;
+    const e = prices[pid] || (prices[pid]={ base:null, opts:{} });
+    if(i.dataset.opt!=null) e.opts[i.dataset.opt]=v; else e.base=v;
+  });
+  a.prices = prices; saveAgents(l); log('AGENT_PRICES', 'Updated prices for agent '+a.name); toastOk('ບັນທຶກລາຄາຕົວແທນແລ້ວ');
+}
+function resetAgentPrices(){
+  const l=getAgents(); const a=l.find(x=>x.id===_ag.id); if(!a) return; a.prices={}; saveAgents(l); paintAgentPrices(a); toastOk('ລ້າງແລ້ວ');
+}
+// ---- ຮູບແຄັບຈໍ (ສົ່ງໃຫ້ແອດມິນ) ----
+function paintAgentGallery(a){
+  document.getElementById('agBody').innerHTML = `
+    <div class="flex flex-wrap items-center gap-2 mb-3">
+      <input id="agImgNote" type="text" placeholder="ໝາຍເຫດ / ສິນຄ້າທີ່ຕ້ອງການ" class="flex-1 min-w-[160px] px-3 py-2 rounded-lg bg-ink-900 border border-ink-700 text-mist-100 text-sm">
+      <label class="px-3 py-2 rounded-lg bg-plasma-500 hover:bg-plasma-600 text-sm font-display font-600 cursor-pointer"><i class="fa-solid fa-upload mr-1"></i> ອັບໂຫຼດຮູບ
+        <input id="agImgInput" type="file" accept="image/*" class="hidden" onchange="agentAddImage(this)"></label></div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">${(a.gallery||[]).map(g=>`
+      <div class="bg-ink-900 border border-ink-700 rounded-lg overflow-hidden">
+        <img src="${g.img}" onclick="openImgLightbox(this.src)" class="w-full h-36 object-cover cursor-pointer">
+        <div class="p-2"><p class="text-xs text-mist-200 truncate">${escapeHtml(g.note||'-')}</p>
+          <div class="flex justify-between text-[11px] text-mist-400 mt-1"><span>${fmtDate(g.at)}</span><button onclick="agentDelImage('${g.id}')" class="text-red-400 hover:underline">ລຶບ</button></div></div></div>`).join('')
+      || '<p class="text-mist-400 text-sm col-span-full text-center py-8">ຍັງບໍ່ມີຮູບ</p>'}</div>`;
+}
+async function agentAddImage(input){
+  const f = input.files[0]; if(!f) return;
+  const l = getAgents(); const a = l.find(x=>x.id===_ag.id); if(!a) return;
+  if((a.gallery||[]).length>=12) return toastErr('ເກັບໄດ້ສູງສຸດ 12 ຮູບ');
+  try{
+    const img = await compressImageFile(f, 1000, 0.7);
+    (a.gallery=a.gallery||[]).unshift({ id:uid('img'), img, note:(document.getElementById('agImgNote').value||'').trim(), at:nowISO() });
+    saveAgents(l); paintAgentGallery(a); toastOk('ອັບໂຫຼດແລ້ວ');
+  }catch(e){ toastErr('ບໍ່ສາມາດອ່ານຮູບນີ້ໄດ້'); }
+}
+function agentDelImage(id){
+  const l=getAgents(); const a=l.find(x=>x.id===_ag.id); if(!a) return;
+  a.gallery=(a.gallery||[]).filter(g=>g.id!==id); saveAgents(l); paintAgentGallery(a);
+}
+// ---- ແບນເນີ + ສີຂອງໜ້າຕົວແທນ (ມີຜົນສະເພາະຕົວແທນນີ້) ----
+const AG_COLORS=['#22C55E','#E11D2E','#3B82F6','#A855F7','#F59E0B','#EC4899','#06B6D4'];
+function paintAgentTheme(a){
+  const col=a.color||'#22C55E';
+  document.getElementById('agBody').innerHTML=`
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="bg-ink-900/60 border border-ink-700 rounded-xl p-4">
+        <p class="font-display text-mist-100 font-600 mb-2"><i class="fa-solid fa-panorama mr-1"></i> ແບນເນີຂອງຕົວແທນ</p>
+        <div class="w-full aspect-[16/9] rounded-lg bg-ink-900 border border-ink-700 overflow-hidden flex items-center justify-center text-mist-400 text-sm mb-3">${a.banner?`<img src="${a.banner}" class="w-full h-full object-cover">`:'ຍັງບໍ່ມີແບນເນີ (ໃຊ້ແບນເນີຫຼັກຂອງຮ້ານ)'}</div>
+        <label class="inline-block px-3 py-2 rounded-lg bg-plasma-500 hover:bg-plasma-600 text-sm font-display font-600 cursor-pointer"><i class="fa-solid fa-upload mr-1"></i> ອັບໂຫຼດແບນເນີ
+          <input type="file" accept="image/*" class="hidden" onchange="agentSetBanner(this)"></label>
+        ${a.banner?`<button onclick="agentClearBanner()" class="ml-2 px-3 py-2 rounded-lg bg-ink-700 hover:bg-ink-600 text-sm font-display">ລຶບແບນເນີ</button>`:''}
+      </div>
+      <div class="bg-ink-900/60 border border-ink-700 rounded-xl p-4">
+        <p class="font-display text-mist-100 font-600 mb-2"><i class="fa-solid fa-palette mr-1"></i> ສີຂອງໜ້າຕົວແທນ (ທັງເວັບ)</p>
+        <div class="flex flex-wrap gap-2 mb-3">${AG_COLORS.map(c=>`<button onclick="agentSetColor('${c}')" class="w-9 h-9 rounded-full border-2 ${c.toLowerCase()===col.toLowerCase()?'border-white':'border-transparent'}" style="background:${c}"></button>`).join('')}</div>
+        <label class="text-xs text-mist-400 font-display">ຫຼືເລືອກສີເອງ</label>
+        <div class="flex items-center gap-2 mt-1"><input type="color" value="${col}" onchange="agentSetColor(this.value)" class="w-12 h-9 bg-transparent rounded cursor-pointer"><span class="font-mono text-sm text-mist-300">${col}</span></div>
+        <div class="mt-4 rounded-lg p-3 text-sm font-display text-white" style="background:${col}">ຕົວຢ່າງສີຂອງໜ້າຕົວແທນ</div>
+        <p class="text-[11px] text-mist-400 mt-2">ສີນີ້ປ່ຽນສະເພາະໜ້າຕົວແທນນີ້. ສີແດງຂອງແອດມິນບໍ່ປ່ຽນ.</p>
+      </div>
+    </div>`;
+}
+function agentSetColor(c){
+  const l=getAgents(); const a=l.find(x=>x.id===_ag.id); if(!a) return;
+  a.color=c; saveAgents(l); paintAgentTheme(a); toastOk('ບັນທຶກສີແລ້ວ');
+}
+async function agentSetBanner(input){
+  const f=input.files[0]; if(!f) return;
+  const l=getAgents(); const a=l.find(x=>x.id===_ag.id); if(!a) return;
+  try{ a.banner=await compressImageFile(f,1400,0.8,90*1024); saveAgents(l); paintAgentTheme(a); toastOk('ບັນທຶກແບນເນີແລ້ວ'); }
+  catch(e){ toastErr('ບໍ່ສາມາດອ່ານຮູບນີ້ໄດ້'); }
+}
+function agentClearBanner(){
+  const l=getAgents(); const a=l.find(x=>x.id===_ag.id); if(!a) return;
+  delete a.banner; saveAgents(l); paintAgentTheme(a);
+}
+</script>
 </body>
 </html>
