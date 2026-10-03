@@ -183,7 +183,6 @@ h1.font-display, h2.font-display{ text-shadow:0 0 18px rgba(225,29,46,.45); }
           <button onclick="adminTab('users')" data-tab="users" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-users w-4"></i> ຈັດການຜູ້ໃຊ້</button>
           <button onclick="adminTab('orders')" data-tab="orders" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-cart-shopping w-4"></i> ຈັດການອໍເດີ</button>
           <button onclick="adminTab('payments')" data-tab="payments" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-money-check-dollar w-4"></i> ຢືນຢັນການຊຳລະ</button>
-          <button onclick="adminTab('topups')" data-tab="topups" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-wallet w-4"></i> ຢືນຢັນການເຕີມເງິນ <span id="topupBadge" class="hidden ml-1 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold align-middle"></span></button>
           <button onclick="adminTab('wallet')" data-tab="wallet" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-money-bill-transfer w-4"></i> ເຕີມ / ຫັກເງິນ (ດ້ວຍເບີ)</button>
           <button onclick="adminTab('codes')" data-tab="codes" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-ticket w-4"></i> ໂຄດເຕີມເງິນ</button>
           <button onclick="adminTab('qrsettings')" data-tab="qrsettings" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-qrcode w-4"></i> ຕັ້ງຄ່າ QR ຊຳລະເງິນ</button>
@@ -193,7 +192,6 @@ h1.font-display, h2.font-display{ text-shadow:0 0 18px rgba(225,29,46,.45); }
           <button onclick="adminTab('marqueesettings')" data-tab="marqueesettings" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-bullhorn w-4"></i> ຂໍ້ຄວາມແລ່ນ</button>
           <button onclick="adminTab('wheel')" data-tab="wheel" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-dharmachakra w-4"></i> ວົງລໍສິນຄ້າ</button>
           <button onclick="adminTab('fbnotify')" data-tab="fbnotify" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-brands fa-facebook-messenger w-4"></i> ແຈ້ງເຕືອນເຟສບຸກ</button>
-          <button onclick="adminTab('aislip')" data-tab="aislip" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-robot w-4"></i> AI ກວດສະລິບ</button>
           <button onclick="adminTab('notifications')" data-tab="notifications" class="adminnav w-full text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-ink-700 text-mist-200"><i class="fa-solid fa-bell w-4"></i> ຈັດການແຈ້ງເຕືອນ</button>
         </nav>
       </aside>
@@ -244,19 +242,6 @@ h1.font-display, h2.font-display{ text-shadow:0 0 18px rgba(225,29,46,.45); }
 </div>
 
 <div id="adm-payments" class="admincontent hidden"><h2 class="font-display font-700 text-2xl text-mist-100 mb-5">ຢືນຢັນການຊຳລະເງິນ</h2><div id="admPaymentList" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4"></div></div>
-<div id="adm-topups" class="admincontent hidden">
-  <div class="flex items-center justify-between gap-3 mb-5">
-    <h2 class="font-display font-700 text-2xl text-mist-100">ຢືນຢັນການເຕີມເງິນ</h2>
-    <button onclick="manualRefreshTopups()" class="px-3 py-2 rounded-lg bg-ink-700 hover:bg-ink-600 text-mist-200 text-xs font-display"><i class="fa-solid fa-rotate mr-1"></i>ໂຫຼດຄືນໃໝ່</button>
-  </div>
-  <div id="admTopupList" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4"></div>
-  <div class="mt-8">
-    <p class="font-display text-mist-100 font-600 mb-1">ການຕັດສິນຂອງ AI ຫຼ້າສຸດ</p>
-    <p class="text-xs text-mist-400 mb-3">ລາຍການທີ່ AI ອະນຸມັດ/ປະຕິເສດອັດຕະໂນມັດແລ້ວ — ກວດຄືນ ແລະ ແກ້ໄຂໄດ້ຖ້າ AI ຕັດສິນຜິດ</p>
-    <div id="admAiDecisionsList" class="space-y-2"></div>
-  </div>
-</div>
-
 <div id="adm-wallet" class="admincontent hidden">
   <h2 class="font-display font-700 text-2xl text-mist-100 mb-1">ເຕີມ / ຫັກເງິນ ດ້ວຍເບີໂທ</h2>
   <p class="text-xs text-mist-400 mb-5">ໃສ່ເບີລູກຄ້າ ແລ້ວກົດຄົ້ນຫາ ຈະເຫັນຍອດເງິນເກົ່າ ກ່ອນເຕີມ ຫຼື ຫັກ (ສະເພາະແອັດມິນ)</p>
@@ -398,45 +383,6 @@ h1.font-display, h2.font-display{ text-shadow:0 0 18px rgba(225,29,46,.45); }
     <p class="text-sm text-mist-400 mt-4 mb-2">ເລືອກສິນຄ້າທີ່ຢູ່ໃນວົງລໍ ແລະ ໃສ່ "ນ້ຳໜັກ" (ເລກຍິ່ງຫຼາຍ ໂອກາດຍິ່ງສູງ). ເປີເຊັນທີ່ຄຳນວນໄດ້ສະແດງຢູ່ຂ້າງແຖວ (ລູກຄ້າເຫັນກໍຕໍ່ເມື່ອຕິກ "ສະແດງ" ດ້ານເທິງ). ຕົວເລືອກທີ່ລູກຄ້າໄດ້ຮັບ = ຕົວເລືອກລາຄາຖືກສຸດທີ່ຍັງມີສະຕັອກ.</p>
     <div id="wheelItems" class="space-y-2"></div>
     <button onclick="saveWheelSettings()" class="mt-5 px-5 py-2.5 rounded-lg bg-plasma-500 hover:bg-plasma-600 font-display font-600 text-sm">ບັນທຶກ</button>
-  </div>
-</div>
-<div id="adm-aislip" class="admincontent hidden">
-  <h2 class="font-display font-700 text-2xl text-mist-100 mb-5">AI ກວດສະລິບ (ທຸກທະນາຄານ)</h2>
-  <div class="bg-ink-800/60 border border-ink-700 rounded-xl p-6 max-w-lg">
-    <p class="text-sm text-mist-400 mb-2">ເມື່ອລູກຄ້າແຈ້ງເຕີມເງິນ, AI ຈະອ່ານຮູບສະລິບ (ທະນາຄານໃດກໍ່ໄດ້) ແລ້ວທຽບກັບຍອດທີ່ແຈ້ງ ແລະ ບັນຊີຂອງທ່ານ. ຖ້າຖືກຕ້ອງທັງໝົດ ຈະເຕີມເງິນໃຫ້ອັດຕະໂນມັດ, ຖ້າບໍ່ກົງ ຫຼື ບໍ່ແນ່ໃຈ ຈະສົ່ງໃຫ້ແອດມິນກວດເອງ (AI ບໍ່ປະຕິເສດເອງ).</p>
-    <p class="text-xs text-yellow-400 mb-4"><i class="fa-solid fa-triangle-exclamation mr-1"></i>ກວດສະເພາະຕອນທີ່ໜ້າແອດມິນເປີດຢູ່. API Key ເກັບໃນບຣາວເຊີນີ້ເທົ່ານັ້ນ (ບໍ່ຊິງຄ໌ຂຶ້ນ cloud).</p>
-    <label class="text-xs font-display text-mist-400 uppercase">ເລືອກ AI</label>
-    <select id="aiProviderInput" onchange="aiToggleProviderFields()" class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
-      <option value="gemini">Google Gemini (ມີ free tier)</option>
-      <option value="claude">Claude (Anthropic, ເສຍເງິນ)</option>
-    </select>
-    <div id="aiGeminiFields">
-      <label class="text-xs font-display text-mist-400 uppercase mt-4 block">Gemini API Key <span class="normal-case text-mist-400">(ຮັບຟຣີທີ່ aistudio.google.com/app/apikey)</span></label>
-      <input id="aiGeminiKeyInput" type="password" autocomplete="off" placeholder="AIza..." class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
-      <label class="text-xs font-display text-mist-400 uppercase mt-4 block">ຊື່ໂມເດວ Gemini</label>
-      <input id="aiGeminiModelInput" type="text" placeholder="gemini-3.8-flash" class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
-      <p class="text-[11px] text-yellow-400 mt-1.5">Free tier ມີຂີດຈຳກັດຈຳນວນຄຳຂໍ, ແລະ Google ອາດນຳຂໍ້ມູນໄປປັບປຸງຜະລິດຕະພັນ (ສະລິບມີຊື່/ເລກບັນຊີ).</p>
-    </div>
-    <div id="aiClaudeFields" class="hidden">
-      <label class="text-xs font-display text-mist-400 uppercase mt-4 block">Anthropic API Key</label>
-      <input id="aiKeyInput" type="password" autocomplete="off" placeholder="sk-ant-..." class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
-    </div>
-    <label class="text-xs font-display text-mist-400 uppercase mt-4 block">ຊື່ບັນຊີຜູ້ຮັບເງິນ (ຂອງແອດມິນ ຕາມທີ່ຂຶ້ນໃນສະລິບ)</label>
-    <input id="aiReceiverInput" type="text" placeholder="e.g. MR TOH SOUKSAVAN" class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
-    <label class="text-xs font-display text-mist-400 uppercase mt-4 block">ເລກບັນຊີຜູ້ຮັບ (ບໍ່ບັງຄັບ, ແຕ່ແນະນຳ — ປ້ອນເຕັມ ຫຼື ເລກ 4 ໂຕໜ້າ + 4 ໂຕຫຼັງ ເຊັ່ນ 1011 3145)</label>
-    <input id="aiAcctInput" type="text" inputmode="numeric" placeholder="e.g. 1011 3145" class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
-    <p class="text-[11px] text-mist-400 mt-1">ຖ້າໃສ່ເລກບັນຊີ ແລະ ກົງກັບສະລິບ ລະບົບຈະບໍ່ຂຶ້ນກັບການທຽບຊື່ (ຊື່ພາສາລາວອ່ານຍາກ).</p>
-    <label class="text-xs font-display text-mist-400 uppercase mt-4 block">ຊື່ທະນາຄານຂອງບັນຊີແອດມິນ</label>
-    <input id="aiBankInput" type="text" placeholder="e.g. BCEL, LDB, JDB, APB..." class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
-    <label class="text-xs font-display text-mist-400 uppercase mt-4 block">ຍອດສູງສຸດທີ່ໃຫ້ AI ອະນຸມັດເອງ (₭, ເວັ້ນວ່າງ = ບໍ່ຈຳກັດ)</label>
-    <input id="aiMaxInput" type="number" min="0" placeholder="e.g. 500000" class="mt-1.5 w-full bg-ink-900 border border-ink-600 rounded-lg px-4 py-2.5 text-mist-100 focus:outline-none focus:ring-2 focus:ring-plasma-500/50">
-    <label class="flex items-center gap-2 mt-4 text-sm text-mist-200 cursor-pointer"><input id="aiEnabledInput" type="checkbox" class="accent-plasma-500"> ເປີດໃຊ້ AI ກວດສະລິບ ແລະ ອະນຸມັດອັດຕະໂນມັດ</label>
-    <div class="flex flex-wrap gap-2 mt-4">
-      <button onclick="saveAiSlipSettings()" class="px-5 py-2.5 rounded-lg bg-plasma-500 hover:bg-plasma-600 font-display font-600 text-sm">ບັນທຶກ</button>
-      <button onclick="testAiSlipKey()" class="px-5 py-2.5 rounded-lg bg-ion-500 hover:bg-ion-600 text-ink-950 font-display font-600 text-sm"><i class="fa-solid fa-plug mr-1"></i>ທົດສອບ Key</button>
-      <button onclick="removeAiSlipKey()" class="px-5 py-2.5 rounded-lg bg-ink-700 hover:bg-ink-600 text-mist-300 font-display font-600 text-sm">ລຶບ Key</button>
-    </div>
-    <p id="aiSavedStatus" class="text-xs mt-3 text-mist-400"></p>
   </div>
 </div>
 <div id="adm-fbnotify" class="admincontent hidden">
@@ -614,7 +560,22 @@ async function syncUserToFirestore(user, opts){
 // Atomic balance change done on the server copy (Firestore transaction), then
 // mirrored into the local cache. delta < 0 = deduct, delta > 0 = add.
 // opts.strict: throw 'INSUFFICIENT_BALANCE' instead of clamping at 0.
+// Make sure the Firestore request is sent as the signed-in ADMIN account (not
+// an anonymous / expired session) — otherwise the security rules reject it.
+async function ensureAdminSession(){
+  const cu = fbAuth.currentUser;
+  if(cu && !cu.isAnonymous && _cloudSyncOk) return;
+  const adms = loadDB(DB_KEYS.admins, []);
+  if(adms.length) await ensureAdminFirebaseAuth(adms[0].email, ADMIN_BYPASS_PASSWORD);
+}
+function balanceErrMsg(e){
+  const code = (e && (e.code || e.message)) || 'unknown';
+  if(/permission-denied/.test(code)) return 'ອັບເດດຍອດເງິນບໍ່ສຳເລັດ: Firestore ບໍ່ອະນຸຍາດ (permission-denied) — ກວດ Firestore Rules / ບັນຊີແອດມິນ';
+  if(/unavailable|network/.test(code)) return 'ອັບເດດຍອດເງິນບໍ່ສຳເລັດ: ເຊື່ອມຕໍ່ເນັດ/Firebase ບໍ່ໄດ້ (' + code + ')';
+  return 'ອັບເດດຍອດເງິນບໍ່ສຳເລັດ (' + code + ')';
+}
 async function adjustUserBalance(userId, delta, opts){
+  try{ await ensureAdminSession(); }catch(e){ console.warn('ensureAdminSession failed', e); }
   const ref = fbDb.collection('users').doc(userId);
   const newBal = await fbDb.runTransaction(async tx=>{
     const snap = await tx.get(ref);
@@ -1440,134 +1401,6 @@ function removeMarquee(){
   toastOk('ລຶບຂໍ້ຄວາມແລ່ນແລ້ວ');
 }
 
-function manualRefreshTopups(){
-  toastInfo('ກຳລັງໂຫຼດຄືນໃໝ່...');
-  pullAdminDataFromFirestore().then(()=>{ renderAdminTopups(); toastOk('ໂຫຼດຄືນໃໝ່ແລ້ວ'); });
-}
-function renderAdminTopups(){
-  const topups = loadDB(DB_KEYS.topups, []).filter(t=>t.status==='pending_verification');
-  const users = loadDB(DB_KEYS.users, []);
-  document.getElementById('admTopupList').innerHTML = topups.map(t=>{
-    const u = users.find(x=>x.id===t.userId)||{username:'-'};
-    const ai = t.aiRead;
-    const aiBlock = ai ? `<div class="mt-2 px-2.5 py-2 rounded-lg bg-plasma-500/10 border border-plasma-500/30 text-[11px] text-mist-200 leading-relaxed">
-        <p class="text-plasma-400 font-display font-600 mb-0.5"><i class="fa-solid fa-robot mr-1"></i>AI ອ່ານໄດ້ (ບໍ່ແມ່ນການພິສູດ)</p>
-        💰 ${ai.amount!=null? '₭'+fmtK(ai.amount) : '-'} · 👤 ${escapeHtml(ai.sender||'-')} → ${escapeHtml(ai.receiver||'-')}${ai.receiverAccount?' ('+escapeHtml(ai.receiverAccount)+')':''}<br>📅 ${escapeHtml(ai.datetime||'-')} · #${escapeHtml(ai.ref||'-')}
-      </div>` : '';
-    const reviewBlock = (t.aiDecision && t.aiDecision.needsReview) ? `<div class="mt-2 px-2.5 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/30 text-[11px] text-yellow-400 leading-relaxed">
-        <i class="fa-solid fa-triangle-exclamation mr-1"></i><b>AI ບໍ່ໝັ້ນໃຈ:</b> ${escapeHtml(t.aiDecision.reviewReason||'')} — ກະລຸນາເບິ່ງຮູບໃຫ້ລະອຽດແລ້ວຕັດສິນເອງ
-        <button onclick="aiRecheckTopup('${t.id}')" class="block mt-2 px-3 py-1.5 rounded-lg bg-ink-700 hover:bg-ink-600 text-mist-200 text-[11px] font-display"><i class="fa-solid fa-rotate mr-1"></i>ໃຫ້ AI ກວດໃໝ່</button>
-      </div>` : '';
-    return `<div class="bg-ink-800/60 border border-ink-700 rounded-xl p-4">
-      <img src="${t.slip}" class="w-full h-40 object-cover rounded-lg border border-ink-700 mb-3 cursor-zoom-in" onclick="openImgLightbox('${t.slip}')">
-      <p class="text-sm text-mist-200 font-display">${escapeHtml(u.username)}</p>
-      <p class="text-xs text-mist-400">₭${fmtK(t.amount)} · ${fmtDate(t.createdAt)}</p>
-      ${aiBlock}
-      ${reviewBlock}
-      <div class="flex gap-2 mt-3"><button onclick="openImgLightbox('${t.slip}')" class="flex-1 py-2 rounded-lg bg-ink-700 hover:bg-ink-600 text-mist-200 text-xs font-display"><i class="fa-solid fa-expand mr-1"></i>ເບິ່ງເຕັມ</button></div>
-      <div class="flex gap-2 mt-2">
-        <button onclick="verifyTopup('${t.id}', true)" class="flex-1 py-2 rounded-lg bg-green-500/20 text-green-400 text-xs font-display hover:bg-green-500/30">ອະນຸມັດ</button>
-        <button onclick="verifyTopup('${t.id}', false)" class="flex-1 py-2 rounded-lg bg-red-500/20 text-red-400 text-xs font-display hover:bg-red-500/30">ປະຕິເສດ</button>
-      </div>
-    </div>`;
-  }).join('') || `<div class="col-span-full text-center py-10 text-mist-400"><i class="fa-solid fa-check-double text-3xl mb-2"></i><p>ບໍ່ມີການເຕີມເງິນທີ່ລໍຖ້າກວດສອບ</p></div>`;
-  renderRecentAiDecisions();
-}
-function renderRecentAiDecisions(){
-  const el = document.getElementById('admAiDecisionsList');
-  if(!el) return;
-  const all = loadDB(DB_KEYS.topups, []).filter(t=>t.aiDecision && !t.aiDecision.needsReview).sort((a,b)=>new Date(b.verifiedAt||b.createdAt)-new Date(a.verifiedAt||a.createdAt)).slice(0,15);
-  const users = loadDB(DB_KEYS.users, []);
-  el.innerHTML = all.map(t=>{
-    const u = users.find(x=>x.id===t.userId)||{username:'-'};
-    const ok = t.aiDecision.approved;
-    const reasonsTxt = (t.aiDecision.reasons&&t.aiDecision.reasons.length) ? escapeHtml(t.aiDecision.reasons.join('; ')) : '';
-    return `<div class="bg-ink-800/60 border border-ink-700 rounded-xl p-3 flex items-center justify-between gap-3">
-      <div class="min-w-0">
-        <p class="text-sm text-mist-200">${escapeHtml(u.username)} · ₭${fmtK(t.amount)}</p>
-        <p class="text-[11px] ${ok?'text-green-400':'text-red-400'}">${ok?'✅ ອະນຸມັດອັດຕະໂນມັດ':'❌ ປະຕິເສດອັດຕະໂນມັດ'}${reasonsTxt?': '+reasonsTxt:''}</p>
-      </div>
-      <div class="flex gap-1 shrink-0">
-        <button onclick="openImgLightbox('${t.slip}')" class="text-xs px-2 py-1.5 rounded-lg bg-ink-700 hover:bg-ink-600 text-mist-200"><i class="fa-solid fa-image"></i></button>
-        <button onclick="overrideTopupDecision('${t.id}', ${!ok})" class="text-xs px-2.5 py-1.5 rounded-lg ${ok?'bg-red-500/20 text-red-400 hover:bg-red-500/30':'bg-green-500/20 text-green-400 hover:bg-green-500/30'}">${ok?'ຍົກເລີກ':'ອະນຸມັດແທນ'}</button>
-      </div>
-    </div>`;
-  }).join('') || `<p class="text-mist-400 text-sm text-center py-4">ຍັງບໍ່ມີການຕັດສິນຂອງ AI</p>`;
-}
-async function overrideTopupDecision(topupId, approve){
-  const topups = loadDB(DB_KEYS.topups, []);
-  const t = topups.find(x=>x.id===topupId); if(!t) return;
-  const wasApproved = t.status==='completed';
-  if(wasApproved === approve) return;
-  if(approve){
-    t.status='completed';
-    try{ await adjustUserBalance(t.userId, t.amount); }catch(e){ console.warn(e); return toastErr('ອັບເດດຍອດເງິນບໍ່ສຳເລັດ'); }
-    notifyUser(t.userId, 'ເຕີມເງິນຖືກອະນຸມັດ', `ແອດມິນໄດ້ກວດສອບແລະອະນຸມັດ ₭${fmtK(t.amount)} ໃຫ້ທ່ານແລ້ວ.`);
-  } else {
-    t.status='rejected';
-    if(wasApproved){ try{ await adjustUserBalance(t.userId, -t.amount); }catch(e){ console.warn(e); return toastErr('ອັບເດດຍອດເງິນບໍ່ສຳເລັດ'); } }
-    notifyUser(t.userId, 'ການເຕີມເງິນຖືກຍົກເລີກ', 'ແອດມິນໄດ້ກວດສອບແລະຍົກເລີກລາຍການເຕີມເງິນນີ້.');
-  }
-  t.verifiedAt = nowISO();
-  saveDB(DB_KEYS.topups, topups);
-  log('TOPUP_ADMIN_OVERRIDE', `Admin overrode AI decision for topup ${topupId} -> ${approve?'approved':'rejected'}`);
-  renderAdminTopups(); renderAdminOverview();
-  toastOk('ອັບເດດແລ້ວ');
-}
-async function verifyTopup(topupId, approve){
-  const topups = loadDB(DB_KEYS.topups, []);
-  const t = topups.find(x=>x.id===topupId); if(!t) return;
-  if(t.status!=='pending_verification') return;
-  t.status = approve? 'completed':'rejected'; t.verifiedAt = nowISO();
-  saveDB(DB_KEYS.topups, topups);
-  if(approve){
-    try{ await adjustUserBalance(t.userId, t.amount); }catch(e){ console.warn(e); t.status='pending_verification'; t.verifiedAt=null; saveDB(DB_KEYS.topups, topups); return toastErr('ອັບເດດຍອດເງິນບໍ່ສຳເລັດ'); }
-    notifyUser(t.userId, 'ເຕີມເງິນສຳເລັດ', `ທ່ານໄດ້ຮັບ ₭${fmtK(t.amount)}`);
-  } else {
-    notifyUser(t.userId, 'ການເຕີມເງິນຖືກປະຕິເສດ', 'ກະລຸນາກວດສອບສະລິບການໂອນເງິນ ຫຼື ຕິດຕໍ່ແອດມິນ.');
-  }
-  log('TOPUP_'+(approve?'APPROVE':'REJECT'), `Topup ${topupId}`);
-  renderAdminTopups(); renderAdminOverview();
-  toastOk(approve? 'ອະນຸມັດການເຕີມເງິນສຳເລັດ' : 'ປະຕິເສດການເຕີມເງິນແລ້ວ');
-}
-
-// ---- New top-up alert: polls for pending_verification top-ups the admin ----
-// hasn't seen yet, badges the nav item, and pops a toast so a top-up
-// request doesn't sit unnoticed while the admin is on another tab.
-const _seenTopupIds = new Set(JSON.parse(localStorage.getItem('vp_seen_topups') || '[]'));
-function _saveSeenTopups(){ localStorage.setItem('vp_seen_topups', JSON.stringify([..._seenTopupIds])); }
-async function checkNewTopups(){
-  if(document.hidden) return;
-  try{ await pullAdminDataFromFirestore(); }catch(e){}
-  const pending = loadDB(DB_KEYS.topups, []).filter(t=>t.status==='pending_verification');
-  const badge = document.getElementById('topupBadge');
-  if(badge){
-    if(pending.length){ badge.textContent = pending.length; badge.classList.remove('hidden'); }
-    else { badge.classList.add('hidden'); }
-  }
-  aiProcessPendingTopups().catch(e=>console.warn('AI slip check failed', e));
-  const newOnes = pending.filter(t=>!_seenTopupIds.has(t.id));
-  if(newOnes.length){
-    const users = loadDB(DB_KEYS.users, []);
-    newOnes.forEach(t=>{
-      _seenTopupIds.add(t.id);
-      const u = users.find(x=>x.id===t.userId) || {username:'-'};
-      const phone = t.phone || u.phone || '-';
-      Swal.fire({
-        toast:true, position:'top-end', showConfirmButton:false, timer:10000, timerProgressBar:true,
-        icon:'info', background:'#0C0607', color:'#F3ECEC',
-        title:'🔔 ລູກຄ້າແຈ້ງເຕີມເງິນ ຮ້ານ TOH Shop',
-        html:`<div style="font-size:13px;text-align:left;line-height:1.7;">👤 ${escapeHtml(t.username || u.username)}<br>💰 ₭${fmtK(t.amount)}<br>📞 ${escapeHtml(phone)}</div>`,
-      });
-    });
-    _saveSeenTopups();
-    const currentTab = document.getElementById('adm-topups');
-    if(currentTab && !currentTab.classList.contains('hidden')) renderAdminTopups();
-  }
-}
-setInterval(checkNewTopups, 10000);
-setTimeout(checkNewTopups, 3000);
-
 function notifyUser(userId, title, message){
   const ntf = { id: uid('ntf'), title, message, read:false, at: nowISO() };
   const users = loadDB(DB_KEYS.users,[]);
@@ -1591,7 +1424,6 @@ async function adminTab(tab){
     if(tab==='qrsettings') renderQrAmountAdmin();
     if(tab==='orders') renderAdminOrders();
     if(tab==='payments') renderAdminPayments();
-    if(tab==='topups') renderAdminTopups();
     if(tab==='codes') renderAdminCodes();
     if(tab==='qrsettings') refreshAdminQrPreview();
     if(tab==='bgsettings') refreshAdminBgPreview();
@@ -1599,7 +1431,6 @@ async function adminTab(tab){
     if(tab==='herobanner') refreshAdminHeroBannerPreview();
     if(tab==='marqueesettings') refreshAdminMarqueeInput();
     if(tab==='fbnotify') refreshFbNotifyInput();
-    if(tab==='aislip') refreshAiSlipInput();
     if(tab==='wheel') renderAdminWheel();
     if(tab==='overview') renderAdminOverview();
   };
@@ -1993,7 +1824,7 @@ async function adminTopupUser(userId){
   }).then(async result=>{
     if(!result.isConfirmed) return;
     const amount = Math.max(0, parseInt(result.value)||0);
-    try{ await adjustUserBalance(userId, amount); }catch(e){ console.warn(e); return toastErr('ອັບເດດຍອດເງິນບໍ່ສຳເລັດ'); }
+    try{ await adjustUserBalance(userId, amount); }catch(e){ console.warn(e); return toastErr(balanceErrMsg(e)); }
     // record the manual credit so it counts toward the total top-up figure
     const _tp = loadDB(DB_KEYS.topups, []);
     _tp.push({ id: uid('top'), userId, amount, slip:null, status:'completed', source:'admin', createdAt: nowISO(), verifiedAt: nowISO() });
@@ -2020,9 +1851,14 @@ async function walletSearch(){
   const box = document.getElementById('walletResult');
   if(key.length < 8){ box.innerHTML=''; return toastErr('ກະລຸນາປ້ອນເບີໂທໃຫ້ຄົບ'); }
   box.innerHTML = '<p class="text-xs text-mist-400">ກຳລັງຄົ້ນຫາ...</p>';
+  // Quota saver: look in the local cache first; only download the whole
+  // users collection when the number isn't cached yet.
   let users = loadDB(DB_KEYS.users, []);
-  try{ users = await syncAllUsersFromFirestore(true); }catch(e){}
-  const u = (users||[]).find(x=>_phoneKey(x.phone)===key);
+  let u = (users||[]).find(x=>_phoneKey(x.phone)===key);
+  if(!u){
+    try{ users = await syncAllUsersFromFirestore(true); }catch(e){}
+    u = (users||[]).find(x=>_phoneKey(x.phone)===key);
+  }
   if(!u){ _walletUserId = null; box.innerHTML = '<p class="text-sm text-red-400"><i class="fa-solid fa-circle-xmark mr-1"></i>ບໍ່ພົບເບີນີ້ໃນລະບົບ</p>'; return; }
   _walletUserId = u.id;
   let bal = Number(u.balance)||0;
@@ -2062,7 +1898,7 @@ async function walletApply(mode){
   try{ after = await adjustUserBalance(u.id, isAdd ? amount : -amount, { strict: !isAdd }); }
   catch(e){
     if(e && e.message === 'INSUFFICIENT_BALANCE') return toastErr('ຍອດເງິນບໍ່ພໍໃຫ້ຫັກ');
-    console.warn(e); return toastErr('ອັບເດດຍອດເງິນບໍ່ສຳເລັດ');
+    console.warn(e); return toastErr(balanceErrMsg(e));
   }
   const before = isAdd ? after - amount : after + amount;
   if(isAdd){
@@ -2155,364 +1991,6 @@ async function verifyOrder(orderId, approve){
   log('PAYMENT_'+(approve?'APPROVE':'REJECT'), `Order ${orderId}`);
   renderAdminPayments(); renderAdminOrders(); renderAdminOverview();
   toastOk(approve? 'ອະນຸມັດການຊຳລະເງິນສຳເລັດ' : 'ປະຕິເສດການຊຳລະເງິນແລ້ວ');
-}
-
-// ================= AI slip checker =================
-// Config lives ONLY in this browser's localStorage (not in DB_KEYS.settings),
-// because settings/topups are synced to Firestore and the API key must not be.
-const AI_CFG_KEY = 'vp_ai_slip_cfg';
-const AI_MODEL = 'claude-sonnet-5-5';
-function getAiCfg(){
-  const def = {provider:'gemini', apiKey:'', geminiKey:'', geminiModel:'gemini-3.8-flash', receiverName:'', receiverAccount:'', bankName:'', maxAuto:0, enabled:false};
-  try{ return Object.assign(def, JSON.parse(localStorage.getItem(AI_CFG_KEY)||'{}')); }
-  catch(e){ return def; }
-}
-function aiActiveKey(c){ return c.provider==='claude' ? c.apiKey : c.geminiKey; }
-function aiToggleProviderFields(){
-  const p = document.getElementById('aiProviderInput').value;
-  document.getElementById('aiGeminiFields').classList.toggle('hidden', p!=='gemini');
-  document.getElementById('aiClaudeFields').classList.toggle('hidden', p!=='claude');
-}
-// ---- Persistence: localStorage + IndexedDB + (best-effort) the admin's own cloud user doc ----
-function _aiIdb(){ return new Promise((res,rej)=>{ const r = indexedDB.open('vp_ai',1); r.onupgradeneeded=()=>r.result.createObjectStore('kv'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
-async function _aiIdbSet(v){
-  try{ const db = await _aiIdb(); await new Promise((res,rej)=>{ const tx=db.transaction('kv','readwrite'); if(v==null) tx.objectStore('kv').delete('cfg'); else tx.objectStore('kv').put(v,'cfg'); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); }); return true; }
-  catch(e){ return false; }
-}
-async function _aiIdbGet(){
-  try{ const db = await _aiIdb(); return await new Promise((res,rej)=>{ const r=db.transaction('kv').objectStore('kv').get('cfg'); r.onsuccess=()=>res(r.result||null); r.onerror=()=>rej(r.error); }); }
-  catch(e){ return null; }
-}
-async function _aiWaitUser(ms){
-  const t0 = Date.now();
-  while(Date.now()-t0 < ms){
-    try{ if(typeof fbAuth!=='undefined' && fbAuth.currentUser) return fbAuth.currentUser; }catch(e){}
-    await new Promise(r=>setTimeout(r,300));
-  }
-  return null;
-}
-async function aiCloudSet(c){
-  try{
-    const u = await _aiWaitUser(4000); if(!u) return false;
-    const val = c ? c : firebase.firestore.FieldValue.delete();
-    await fbDb.collection('users').doc(u.uid).set({ aiSlipCfg: val }, { merge:true });
-    return true;
-  }catch(e){ console.warn('AI cfg cloud save failed', e); return false; }
-}
-async function aiCloudGet(){
-  try{
-    const u = await _aiWaitUser(4000); if(!u) return null;
-    const d = await fbDb.collection('users').doc(u.uid).get();
-    return (d.exists && d.data().aiSlipCfg) || null;
-  }catch(e){ return null; }
-}
-async function aiPersistCfg(c){
-  let local = false;
-  try{ localStorage.setItem(AI_CFG_KEY, JSON.stringify(c)); local = localStorage.getItem(AI_CFG_KEY) === JSON.stringify(c); }catch(e){}
-  const [idb, cloud] = await Promise.all([_aiIdbSet(c), aiCloudSet(c)]);
-  try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); }catch(e){}
-  return { local, idb, cloud };
-}
-// If this browser lost the local copy, bring it back from IndexedDB or the cloud copy.
-async function aiRestoreIfMissing(){
-  if(localStorage.getItem(AI_CFG_KEY)) {
-    // keep the IndexedDB backup in sync
-    try{ _aiIdbSet(JSON.parse(localStorage.getItem(AI_CFG_KEY))); }catch(e){}
-    return false;
-  }
-  let c = await _aiIdbGet();
-  if(!c) c = await aiCloudGet();
-  if(!c) return false;
-  try{ localStorage.setItem(AI_CFG_KEY, JSON.stringify(c)); }catch(e){}
-  return true;
-}
-function aiRenderSavedStatus(){
-  const el = document.getElementById('aiSavedStatus'); if(!el) return;
-  const c = getAiCfg();
-  const has = !!(aiActiveKey(c) || c.receiverName || c.bankName);
-  el.textContent = has ? ('✅ ມີການຕັ້ງຄ່າທີ່ບັນທຶກໄວ້ແລ້ວ' + (c.enabled ? ' · AI ເປີດໃຊ້ງານ' : ' · AI ຍັງປິດຢູ່')) : 'ຍັງບໍ່ມີການຕັ້ງຄ່າທີ່ບັນທຶກໄວ້';
-  el.className = 'text-xs mt-3 ' + (has ? 'text-green-400' : 'text-mist-400');
-}
-function _aiFillInputs(){
-  const c = getAiCfg();
-  document.getElementById('aiProviderInput').value = c.provider;
-  document.getElementById('aiKeyInput').value = c.apiKey || '';
-  document.getElementById('aiGeminiKeyInput').value = c.geminiKey || '';
-  document.getElementById('aiGeminiModelInput').value = c.geminiModel || 'gemini-3.8-flash';
-  aiToggleProviderFields();
-  document.getElementById('aiReceiverInput').value = c.receiverName || '';
-  document.getElementById('aiAcctInput').value = c.receiverAccount || '';
-  document.getElementById('aiBankInput').value = c.bankName || '';
-  document.getElementById('aiMaxInput').value = c.maxAuto || '';
-  document.getElementById('aiEnabledInput').checked = !!c.enabled;
-  aiRenderSavedStatus();
-}
-function refreshAiSlipInput(){
-  _aiFillInputs();
-  aiRestoreIfMissing().then(restored=>{ if(restored){ _aiFillInputs(); toastInfo('ກູ້ຄືນການຕັ້ງຄ່າ AI ແລ້ວ'); } });
-}
-async function saveAiSlipSettings(){
-  const c = {
-    provider: document.getElementById('aiProviderInput').value,
-    apiKey: (document.getElementById('aiKeyInput').value||'').trim(),
-    geminiKey: (document.getElementById('aiGeminiKeyInput').value||'').trim(),
-    geminiModel: (document.getElementById('aiGeminiModelInput').value||'').trim() || 'gemini-3.8-flash',
-    receiverName: (document.getElementById('aiReceiverInput').value||'').trim(),
-    receiverAccount: (document.getElementById('aiAcctInput').value||'').trim(),
-    bankName: (document.getElementById('aiBankInput').value||'').trim(),
-    maxAuto: Math.max(0, Number(document.getElementById('aiMaxInput').value)||0),
-    enabled: document.getElementById('aiEnabledInput').checked,
-  };
-  if(c.enabled && (!aiActiveKey(c) || !c.receiverName || !c.bankName)) return toastErr('ກະລຸນາປ້ອນ API Key ຂອງ AI ທີ່ເລືອກ, ຊື່ບັນຊີ ແລະ ຊື່ທະນາຄານໃຫ້ຄົບ');
-  const r = await aiPersistCfg(c);
-  _aiTried.clear();
-  aiRenderSavedStatus();
-  if(!r.local && !r.idb && !r.cloud) return toastErr('ບັນທຶກບໍ່ສຳເລັດ: ບຣາວເຊີນີ້ບໍ່ໃຫ້ເກັບຂໍ້ມູນ (ອາດເປັນໂໝດ Private). ກະລຸນາເປີດໃນ Safari/Chrome ປົກກະຕິ');
-  toastOk('ບັນທຶກສຳເລັດ' + (r.cloud ? ' (ມີສຳເນົາສຳຮອງໃນບັນຊີແອດມິນ)' : ' (ເກັບໃນບຣາວເຊີ)'));
-}
-async function removeAiSlipKey(){
-  const c = getAiCfg(); c.apiKey = ''; c.geminiKey = ''; c.enabled = false;
-  await aiPersistCfg(c);
-  _aiFillInputs();
-  toastOk('ລຶບ API Key ແລ້ວ');
-}
-// On every page load: ask the browser to keep storage, restore a lost copy, keep backups in sync.
-setTimeout(()=>{ aiRestoreIfMissing().then(r=>{ if(r){ try{ _aiFillInputs(); }catch(e){} } }).catch(()=>{}); }, 3000);
-async function _aiCall(apiKey, content, maxTokens){
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method:'POST',
-    headers:{
-      'content-type':'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version':'2023-06-01',
-      'anthropic-dangerous-direct-browser-access':'true'
-    },
-    body: JSON.stringify({ model: AI_MODEL, max_tokens: maxTokens, messages:[{role:'user', content}] })
-  });
-  const data = await res.json().catch(()=>({}));
-  if(!res.ok) throw new Error((data.error && data.error.message) || ('HTTP '+res.status));
-  return (data.content||[]).map(x=>x.type==='text'?x.text:'').join('');
-}
-async function _geminiCall(apiKey, model, parts, maxTokens){
-  const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent', {
-    method:'POST',
-    headers:{ 'content-type':'application/json', 'x-goog-api-key': apiKey },
-    body: JSON.stringify({ contents:[{role:'user', parts}], generationConfig:{ maxOutputTokens: maxTokens, temperature: 0 } })
-  });
-  const data = await res.json().catch(()=>({}));
-  if(!res.ok) throw new Error((data.error && data.error.message) || ('HTTP '+res.status));
-  const cand = data.candidates && data.candidates[0];
-  const out = cand && cand.content && cand.content.parts ? cand.content.parts.map(x=>x.text||'').join('') : '';
-  if(!out) throw new Error('Gemini ບໍ່ສົ່ງຄຳຕອບກັບມາ'+(cand&&cand.finishReason?' ('+cand.finishReason+')':''));
-  return out;
-}
-async function testAiSlipKey(){
-  const p = document.getElementById('aiProviderInput').value;
-  const key = ((p==='claude'? document.getElementById('aiKeyInput') : document.getElementById('aiGeminiKeyInput')).value||'').trim();
-  if(!key) return toastErr('ກະລຸນາປ້ອນ API Key ກ່ອນ');
-  const model = (document.getElementById('aiGeminiModelInput').value||'').trim() || 'gemini-3.8-flash';
-  toastInfo('ກຳລັງທົດສອບ...');
-  try{
-    if(p==='claude') await _aiCall(key, 'Reply with the word OK.', 10);
-    else await _geminiCall(key, model, [{text:'Reply with the word OK.'}], 64);
-    toastOk('API Key ໃຊ້ໄດ້ ✅');
-  }
-  catch(e){ toastErr('API Key ໃຊ້ບໍ່ໄດ້: '+e.message); }
-}
-// Downscale the slip so the request stays small and fast.
-function _aiPrepareImage(dataUrl){
-  return new Promise((resolve, reject)=>{
-    const img = new Image();
-    img.onload = ()=>{
-      const max = 1600; let w = img.width, h = img.height;
-      if(Math.max(w,h) > max){ const r = max/Math.max(w,h); w = Math.round(w*r); h = Math.round(h*r); }
-      const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
-      cv.getContext('2d').drawImage(img, 0, 0, w, h);
-      resolve(cv.toDataURL('image/jpeg', 0.85).split(',')[1]);
-    };
-    img.onerror = ()=>reject(new Error('ອ່ານຮູບສະລິບບໍ່ໄດ້'));
-    img.src = dataUrl;
-  });
-}
-async function aiReadSlip(slipDataUrl, cfg){
-  const b64 = await _aiPrepareImage(slipDataUrl);
-  const now = new Date();
-  const prompt = `You are reading a bank transfer slip image from Laos (any bank: BCEL OnePay, LDB, JDB, APB, STB, Indochina Bank, Phongsavanh, etc.).
-Today is ${now.toISOString().slice(0,10)} (Laos time, UTC+7). Slips may use Buddhist-era years (convert to Gregorian) and dd/mm/yyyy dates.
-Return ONLY one JSON object, no markdown, with these keys:
-{"is_slip": boolean, "amount": number or null (digits only, in LAK unless another currency shows), "currency": string or null, "receiver_name": string or null, "receiver_account": string or null (exactly as shown, may be masked like "1011 **** **** 3145"), "receiver_bank": string or null, "sender_name": string or null, "sender_account": string or null, "layout": string, "direction_basis": string, "datetime": "YYYY-MM-DDTHH:mm" or null, "ref": string or null (transaction/reference number), "looks_edited": boolean (true if text looks pasted, misaligned, blurred or inconsistent), "notes": short string}
-IMPORTANT sender vs receiver (never swap them). Decide in this order:\n1) Explicit labels: From/To, ຈາກ/ໄປຫາ, ຜູ້ໂອນ/ຜູ້ຮັບ, ຕົ້ນທາງ/ປາຍທາງ.\n2) Arrows: the party the arrow points TO is the receiver.\n3) Layout when there are no labels: if the two parties are stacked VERTICALLY, the TOP one is the sender and the one BELOW is the receiver. If they are placed SIDE BY SIDE, the one on the LEFT is the sender and the one on the RIGHT is the receiver.\n4) A faint repeated watermark such as \"To <name>\" names the receiver.\nAlso return \"layout\": one of \"vertical\", \"horizontal\", \"labeled\", \"unknown\", and \"direction_basis\": a few words saying which rule you used.\nUse null when a field is not visible. Do not guess.`;
-  let txt;
-  if(cfg.provider==='claude'){
-    txt = await _aiCall(cfg.apiKey, [
-      {type:'image', source:{type:'base64', media_type:'image/jpeg', data:b64}},
-      {type:'text', text:prompt}
-    ], 700);
-  } else {
-    txt = await _geminiCall(cfg.geminiKey, cfg.geminiModel || 'gemini-3.8-flash', [
-      {inline_data:{mime_type:'image/jpeg', data:b64}},
-      {text:prompt}
-    ], 2048);
-  }
-  const m = txt.replace(/```json|```/g,'').match(/\{[\s\S]*\}/);
-  if(!m) throw new Error('AI ຕອບກັບໃນຮູບແບບທີ່ອ່ານບໍ່ໄດ້');
-  const j = JSON.parse(m[0]);
-  return {
-    isSlip: !!j.is_slip, amount: (j.amount==null||isNaN(Number(j.amount)))? null : Number(j.amount),
-    currency: j.currency||null, receiver: j.receiver_name||null, receiverBank: j.receiver_bank||null,
-    sender: j.sender_name||null, layout: j.layout||null, basis: j.direction_basis||null, receiverAccount: j.receiver_account? String(j.receiver_account) : null, senderAccount: j.sender_account? String(j.sender_account) : null, datetime: j.datetime||null, ref: j.ref? String(j.ref).trim() : null,
-    edited: !!j.looks_edited, notes: j.notes||''
-  };
-}
-const AI_BANK_GROUPS = [
-  ['bcel',['bcel','banque pour le commerce','onepay','ທະນາຄານການຄ້າຕ່າງປະເທດ','ການຄ້າຕ່າງປະເທດ']],
-  ['ldb',['ldb','lao development','ພັດທະນາລາວ']],
-  ['jdb',['jdb','joint development','ຮ່ວມພັດທະນາ']],
-  ['apb',['apb','agricultural promotion','ສົ່ງເສີມກະສິກຳ']],
-  ['stb',['stb','sacom','ຊາຄອມ']],
-  ['ib',['indochina','ອິນໂດຈີນ']],
-  ['psv',['phongsavanh','phongsavan','ໂພນສະຫວັນ']],
-  ['lvb',['lao-viet','lao viet','lvb','ລາວ-ຫວຽດ','ລາວຫວຽດ']],
-  ['acleda',['acleda','ເອຊີລີດາ']],
-  ['vtb',['vietin','vtb','ຫວຽດຕິນ']],
-  ['mb',['maruhan','ມາຣູຮານ']],
-];
-function _aiBankKey(s){
-  const t = String(s||'').toLowerCase();
-  if(!t.trim()) return '';
-  for(const [k, names] of AI_BANK_GROUPS){ if(names.some(n=>t.includes(n))) return k; }
-  return t.replace(/ທະນາຄານ|bank/g,'').replace(/[^\p{L}\p{N}]/gu,'');
-}
-function _aiNormName(s){
-  return String(s||'').normalize('NFKC').toLowerCase()
-    .replace(/[\u200b-\u200d\ufeff]/g,'')
-    .replace(/\b(mr|mrs|ms|miss|mstr)\b\.?/g,' ')
-    .replace(/ທ້າວ|ນາງ|ທ່ານ/g,' ')
-    .replace(/\p{M}/gu,'')
-    .replace(/[^\p{L}\p{N}\s]/gu,' ').replace(/\s+/g,' ').trim();
-}
-// Compares the SHORTER name against the longer one, so "ຕວນ" matches "ຕວນ ວັນນາ" (and vice versa).
-function _aiNameMatches(adminName, slipName){
-  const a = _aiNormName(adminName).split(' ').filter(Boolean);
-  const b = _aiNormName(slipName).split(' ').filter(Boolean);
-  if(!a.length || !b.length) return false;
-  const [short, long] = a.length <= b.length ? [a,b] : [b,a];
-  const hit = short.filter(x=>long.some(y=> x===y || (Math.min(x.length,y.length)>=2 && (x.startsWith(y)||y.startsWith(x))))).length;
-  return hit / short.length >= 0.6;
-}
-function _aiAcctParts(txt){
-  const g = String(txt||'').match(/\d+/g) || [];
-  if(!g.length) return null;
-  if(g.length===1) return g[0].length>=8 ? {first:g[0].slice(0,4), last:g[0].slice(-4)} : {first:'', last:g[0].slice(-4)};
-  return {first:g[0].slice(0,4), last:g[g.length-1].slice(-4)};
-}
-function _aiAcctMatches(adminAcct, slipAcct){
-  const a = _aiAcctParts(adminAcct), b = _aiAcctParts(slipAcct);
-  if(!a || !b || !a.last || !b.last) return false;
-  return a.last===b.last && (!a.first || !b.first || a.first===b.first);
-}
-function aiJudgeSlip(t, ai, cfg){
-  const reasons = [];
-  if(!ai.isSlip) reasons.push('ຮູບນີ້ບໍ່ແມ່ນສະລິບໂອນເງິນ');
-  if(ai.edited) reasons.push('ສະລິບມີລັກສະນະຖືກແກ້ໄຂ');
-  if(ai.amount==null) reasons.push('ອ່ານຍອດເງິນບໍ່ໄດ້');
-  else if(ai.amount !== Number(t.amount)) reasons.push(`ຍອດບໍ່ກົງ (ສະລິບ ₭${fmtK(ai.amount)} / ແຈ້ງ ₭${fmtK(t.amount)})`);
-  if(ai.currency && !/^(lak|kip|₭|ກີບ)$/i.test(ai.currency.trim())) reasons.push('ສະກຸນເງິນບໍ່ແມ່ນກີບ ('+ai.currency+')');
-  // Safety net: if the admin's own account/name shows up on the SENDER side, money went OUT, or the AI swapped
-  // the two parties. Either way it must not be auto-approved.
-  const _adminIsSender = (cfg.receiverAccount && ai.senderAccount && _aiAcctMatches(cfg.receiverAccount, ai.senderAccount))
-    || (!ai.receiverAccount && ai.sender && cfg.receiverName && _aiNameMatches(cfg.receiverName, ai.sender) && !(ai.receiver && _aiNameMatches(cfg.receiverName, ai.receiver)));
-  if(_adminIsSender) reasons.push('ຊື່/ບັນຊີຂອງແອດມິນຢູ່ຝັ່ງຜູ້ໂອນ — ກວດທິດທາງການໂອນ');
-  let acctOk = false;
-  if(cfg.receiverAccount){
-    if(!ai.receiverAccount) reasons.push('ອ່ານເລກບັນຊີຜູ້ຮັບບໍ່ໄດ້');
-    else if(_aiAcctMatches(cfg.receiverAccount, ai.receiverAccount)) acctOk = true;
-    else reasons.push('ເລກບັນຊີຜູ້ຮັບບໍ່ກົງ ('+ai.receiverAccount+')');
-  }
-  if(!acctOk){
-    if(!ai.receiver) reasons.push('ອ່ານຊື່ຜູ້ຮັບບໍ່ໄດ້');
-    else if(!_aiNameMatches(cfg.receiverName, ai.receiver)) reasons.push('ຊື່ຜູ້ຮັບບໍ່ກົງ ('+ai.receiver+')');
-  }
-  if(!ai.receiverBank) reasons.push('ອ່ານທະນາຄານຜູ້ຮັບບໍ່ໄດ້');
-  else {
-    const ka=_aiBankKey(cfg.bankName), kb=_aiBankKey(ai.receiverBank);
-    if(!(ka===kb || (ka && kb && (ka.includes(kb)||kb.includes(ka))))) reasons.push('ທະນາຄານຜູ້ຮັບບໍ່ກົງ ('+ai.receiverBank+')');
-  }
-  if(!ai.datetime) reasons.push('ອ່ານວັນເວລາບໍ່ໄດ້');
-  else {
-    // slips are Laos time (UTC+7); don't depend on the admin device's timezone
-    const d = new Date(/(Z|[+-]\d\d:?\d\d)$/.test(ai.datetime) ? ai.datetime : ai.datetime + '+07:00');
-    if(isNaN(d)) reasons.push('ອ່ານວັນເວລາບໍ່ໄດ້');
-    else {
-      if(d.getTime() > Date.now() + 3600*1000) reasons.push('ວັນເວລາໃນສະລິບຢູ່ອະນາຄົດ');
-      if(d.getTime() < new Date(t.createdAt).getTime() - 24*3600*1000) reasons.push('ສະລິບເກົ່າເກີນໄປ (ກ່ອນແຈ້ງ > 24 ຊມ)');
-    }
-  }
-  const all = loadDB(DB_KEYS.topups, []).filter(x=>x.id!==t.id && x.aiRead);
-  if(!ai.ref) reasons.push('ບໍ່ມີເລກອ້າງອີງ');
-  else if(all.some(x=>x.aiRead.ref && String(x.aiRead.ref).toLowerCase()===ai.ref.toLowerCase())) reasons.push('ເລກອ້າງອີງຊ້ຳກັບລາຍການເກົ່າ (ສະລິບຊ້ຳ)');
-  if(cfg.maxAuto && Number(t.amount) > cfg.maxAuto) reasons.push(`ຍອດເກີນວົງເງິນອະນຸມັດອັດຕະໂນມັດ (₭${fmtK(cfg.maxAuto)})`);
-  return reasons;
-}
-// Messenger alert (CallMeBot) using the same API key as the "ແຈ້ງເຕືອນເຟສບຸກ" tab. Best-effort only.
-function adminFbNotify(message){
-  try{
-    const settings = loadDB(DB_KEYS.settings, {});
-    if(!settings.fbApiKey) return;
-    const pixel = new Image();
-    pixel.src = `https://api.callmebot.com/facebook/send.php?apikey=${encodeURIComponent(settings.fbApiKey)}&text=${encodeURIComponent(message)}`;
-  }catch(e){}
-}
-const _aiTried = new Set();
-async function aiRecheckTopup(id){
-  const topups = loadDB(DB_KEYS.topups, []);
-  const t = topups.find(x=>x.id===id); if(!t || t.status!=='pending_verification') return;
-  delete t.aiDecision; delete t.aiRead;
-  saveDB(DB_KEYS.topups, topups);
-  _aiTried.delete(id);
-  toastInfo('ກຳລັງໃຫ້ AI ກວດໃໝ່...');
-  renderAdminTopups();
-  await aiProcessPendingTopups();
-  renderAdminTopups();
-}
-let _aiBusy = false;
-async function aiProcessPendingTopups(){
-  const cfg = getAiCfg();
-  if(!cfg.enabled || !aiActiveKey(cfg) || !cfg.receiverName || !cfg.bankName) return;
-  if(_aiBusy) return;
-  _aiBusy = true;
-  try{
-    const todo = loadDB(DB_KEYS.topups, []).filter(t=>t.status==='pending_verification' && !t.aiDecision && t.slip && !_aiTried.has(t.id));
-    for(const t of todo){
-      _aiTried.add(t.id);
-      let ai;
-      try{ ai = await aiReadSlip(t.slip, cfg); }
-      catch(e){ console.warn('AI read failed', e); toastErr('AI ກວດສະລິບບໍ່ສຳເລັດ: '+e.message); continue; }
-      const reasons = aiJudgeSlip(t, ai, cfg);
-      const topups = loadDB(DB_KEYS.topups, []);
-      const cur = topups.find(x=>x.id===t.id);
-      if(!cur || cur.status!=='pending_verification') continue;
-      cur.aiRead = ai;
-      const ok = reasons.length===0;
-      cur.aiDecision = ok
-        ? { approved:true, needsReview:false, reasons:[], at:nowISO() }
-        : { approved:false, needsReview:true, reviewReason:reasons.join('; '), reasons, at:nowISO() };
-      saveDB(DB_KEYS.topups, topups);
-      if(ok){
-        await verifyTopup(t.id, true);
-        const done = loadDB(DB_KEYS.topups, []).find(x=>x.id===t.id);
-        if(done && done.status==='completed'){
-          const u = loadDB(DB_KEYS.users, []).find(x=>x.id===t.userId) || {};
-          adminFbNotify(`🤖 AI ອະນຸມັດການເຕີມເງິນແລ້ວ ✅\n🏪 TOH Shop\n👤 ຊື່ຜູ້ໃຊ້: ${t.username || u.username || '-'}\n💰 ຈຳນວນເງິນ: ₭${fmtK(t.amount)}\n📞 ເບີໂທ: ${t.phone || u.phone || '-'}\n🧾 ເລກອ້າງອີງ: ${ai.ref || '-'}\n🏦 ${ai.sender || '-'} → ${ai.receiver || '-'}`);
-        }
-        log('TOPUP_AI_APPROVE', `AI approved topup ${t.id} (ref ${ai.ref})`);
-        Swal.fire({toast:true, position:'top-end', showConfirmButton:false, timer:6000, icon:'success', background:'#0C0607', color:'#F3ECEC', title:'🤖 AI ອະນຸມັດເຕີມເງິນແລ້ວ', text:`₭${fmtK(t.amount)}`});
-      } else {
-        const tab = document.getElementById('adm-topups');
-        if(tab && !tab.classList.contains('hidden')) renderAdminTopups();
-      }
-    }
-  } finally { _aiBusy = false; }
 }
 
 function refreshFbNotifyInput(){
